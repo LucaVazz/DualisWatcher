@@ -43,11 +43,11 @@ This document deliberately is only a MWE for handling the Dualis-Application.
 ### GETting One Result-List
 **Endpoint:** `/mgrqcgi?APPNAME=CampusNet&PRGNAME=COURSERESULTS&ARGUMENTS=-N<token>,-N000307,-N<semesterId>`
 
-**Response:** page with a `<table class="nb list">` containing several links like `<a id="Popup_details0001" href="/scripts/mgrqcgi?APPNAME=CampusNet&amp;PRGNAME=RESULTDETAILS&amp;ARGUMENTS=-<token>,-N000307,-<courseId>,-N000000015024000">Prüfungen</a>`
+**Response:** page with a `<table class="nb list">` containing several links like `<a id="Popup_details0001" href="/scripts/mgrqcgi?APPNAME=CampusNet&amp;PRGNAME=RESULTDETAILS&amp;ARGUMENTS=-<token>,-N000307,-N<courseId>,-N000000015024000">Prüfungen</a>`
 
 
 ### GETting One Course-Result
-**Endpoint**: `/mgrqcgi?APPNAME=CampusNet&PRGNAME=RESULTDETAILS&ARGUMENTS=-N<token>,-,-<courseId>`
+**Endpoint**: `/mgrqcgi?APPNAME=CampusNet&PRGNAME=RESULTDETAILS&ARGUMENTS=-N<token>,-,-N<courseId>`
 
 **Response**: page with the following:
 - a `<h1>` containing the full course title
