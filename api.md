@@ -47,7 +47,7 @@ This document deliberately is only a MWE for handling the Dualis-Application.
 
 
 ### GETting One Course-Result
-**Endpoint**: `/mgrqcgi?APPNAME=CampusNet&PRGNAME=RESULTDETAILS&ARGUMENTS=-N<token>,-,-N<courseId>`
+**Endpoint**: `/mgrqcgi?APPNAME=CampusNet&PRGNAME=RESULTDETAILS&ARGUMENTS=-N<token>,-N000307,-N<courseId>`
 
 **Response**: page with the following:
 - a `<h1>` containing the full course title

@@ -15,16 +15,21 @@ class RequestHelper:
             # (no, we don't have to. Chrome is also sending cnsc=0 everytime and it works fine)
         }
 
-    def get_ressource(self, programName: str, id='000000000000000') -> BeautifulSoup:
+    def get_ressource(self, programName: str, id: str = None) -> BeautifulSoup:
         """
         Sends a GET-Request to the Dualis System
-        :param programName: the name of the Dualis sub-program to call, as expected by PRGNAME
-        :param id: the optional id in the ARGUMENTS list for the sub-program
-        :return: the response returned by the Dualis System, already checked for errors
+        @param programName: The name of the Dualis sub-program to call, as expected by PRGNAME.
+        @param id: The optional id in the ARGUMENTS list for the sub-program.
+        @return: The response returned by the Dualis System, already checked for errors.
         """
 
         if (self.token is None):
             raise ValueError('The required Token is not set!')
+
+        if (id is not None):
+            id_segment = ',-N' + id
+        else:
+            id_segment = ','
 
         self.connection.request(
             'GET',
@@ -33,7 +38,8 @@ class RequestHelper:
                 + '&ARGUMENTS='
                 + '-N' + self.token
                 + ',-N000019'
-                + ',-N' + id
+                + id_segment,
+            headers=self.stdHeader
         )
 
         response = self.connection.getresponse()
@@ -43,9 +49,9 @@ class RequestHelper:
     def post_raw(self, relative_url: str, data: object) -> (BeautifulSoup, HTTPResponse):
         """
         Sends data via POST to the Dualis System
-        :param relativeUrl: the Endpoint-Url to which the data should be send, relative to /scripts/mgrqcgi
-        :param data: a plain object representing the data to post
-        :return: the response returned by the Dualis System, already checked for errors
+        @param relativeUrl: the Endpoint-Url to which the data should be send, relative to /scripts/mgrqcgi
+        @param data: a plain object representing the data to post
+        @return: the response returned by the Dualis System, already checked for errors
         """
         data_urlencoded = urllib.parse.urlencode(data)
 
