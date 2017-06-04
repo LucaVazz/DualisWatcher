@@ -11,7 +11,7 @@ class VersionRecorder:
             os.makedirs(dir_name)
             os.chdir(dir_name)
             try:
-                sub_run_git(['init'])
+                self._sub_run_git(['init'])
             finally:
                 os.chdir('..')
 
@@ -27,26 +27,30 @@ class VersionRecorder:
 
         self.is_creating_new_version = True
 
-    def save_file(self, file_id, content):
+    def save_file(self, file_id: str, content: str):
         if (not self.is_creating_new_version):
             raise ValueError('You need to start the creation of a new version to add files!')
 
         with open(os.path.join(self.dir, file_id), 'w+') as f:
             f.write(content)
 
-    def changes_of_new_version(self):
+    def changes_of_new_version(self) -> 'CollectionOfDiffIds':
         if (not self.is_creating_new_version):
             raise ValueError('You need to start the creation of a new version and add files to detect the changes!')
 
         os.chdir(self.dir)
         try:
-            entries_raw = sub_run_git(['status', '--short'])
+            entries_raw = self._sub_run_git(['status', '--short'])
+
+            if (entries_raw == ''):
+                return CollectionOfDiffIds(0, [], [], {})
+
             entries_raw_without_final_linebreak = entries_raw[:-1]
             entries = entries_raw_without_final_linebreak.split('\n')
 
             added = []
             deleted = []
-            changed = []
+            modified = {}
 
             for entry in entries:
                 # an entry has the form of i.e. '?? asdf.txt' / ' M asdf.txt' / ' D asdf.txt'
@@ -58,39 +62,46 @@ class VersionRecorder:
                 elif (indicator == ' D'):
                     deleted.append(file_name)
                 elif (indicator == ' M'):
-                    diff_raw = sub_run_git(['--no-pager', 'diff', '--word-diff', '--', file_name])
+                    diff_raw = self._sub_run_git(['--no-pager', 'diff', '--word-diff', '--', file_name])
                     diffs = diff_raw.split('\n@@')
                     diffs = diffs[1:]  # because we don't need the preface
-                    changed.append((file_name, diffs))
+                    modified.update( {file_name : diffs} )
                 else:
                     raise RuntimeError('Git diff reported an unexpected indicator!')
 
-            changes_count = len(added) + len(deleted) + len(changed)
+            changes_count = len(added) + len(deleted) + len(modified)
         finally:
             os.chdir('..')
 
-        return (changes_count, added, deleted, changed)
+        return CollectionOfDiffIds(changes_count, added, deleted, modified)
 
 
     def save_new_version(self):
-        if (self.changes_of_new_version()[0] > 0):
+        if (self.changes_of_new_version().diff_count > 0):
             os.chdir(self.dir)
             try:
-                sub_run_git(['add', '.'])
-                sub_run_git(['commit', '-m "new version!"', '--author="FileRecorder<no-reply@localhost>"'])
+                self._sub_run_git(['add', '.'])
+                self._sub_run_git(['commit', '-m "new version!"', '--author="FileRecorder<no-reply@localhost>"'])
             finally:
                 os.chdir('..')
 
         self.is_creating_new_version = False
-        return
+
+    @staticmethod
+    def _sub_run_git(commands: []) -> str:
+        commands.insert(0, 'git')
+        result = subprocess.run(commands, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+
+        error = result.stderr.decode('utf-8')
+        if (error != ''):
+            raise RuntimeError(error)
+
+        return result.stdout.decode('ISO-8859-1')
 
 
-def sub_run_git(commands: []):
-    commands.insert(0, 'git')
-    result = subprocess.run(commands, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-
-    error = result.stderr.decode('utf-8')
-    if (error != ''):
-        raise RuntimeError(error)
-
-    return result.stdout.decode('ISO-8859-1')
+class CollectionOfDiffIds:
+    def __init__(self, count: int, added: [str], deleted: [str], modified: {str : str}):
+        self.diff_count = count
+        self.added = added
+        self.deleted = deleted
+        self.modified = modified

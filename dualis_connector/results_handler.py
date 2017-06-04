@@ -19,17 +19,20 @@ class ResultsHandler:
     def fetch_courses(self, semester_id: str):
         page = self.request_helper.get_ressource('COURSERESULTS', semester_id)
 
-        results = []
+        results = {}
         course_entries = page.find('table', class_='nb list').find('tbody').findAll('tr')
-        #                                 ^ because class is a reserved Python-keyword
+        #                                        ^ required by BeautifulSoup, because class is a reserved Python-keyword
         course_entries_without_gpa = course_entries[:-1]
         for entry in course_entries_without_gpa:
             # we need to extract the course id from the link to open the view
             link_raw = entry.find('a').attrs['href']
-            link_arguments_raw = link_raw.split('ARGUMENTS=')[1]
+            link_arguments_raw = link_raw.split('ARGUMENTS=').pop()
             link_arguments = link_arguments_raw.split(',')
             course_id = link_arguments[2][len('-N'):] # drop the '-N' prefix
-            results.append(course_id)
+
+            course_name = entry.findAll('td')[2].string
+
+            results.update( {course_id : course_name} )
 
         return results
 

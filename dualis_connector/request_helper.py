@@ -22,28 +22,23 @@ class RequestHelper:
         @param id: The optional id in the ARGUMENTS list for the sub-program.
         @return: The response returned by the Dualis System, already checked for errors.
         """
-
         if (self.token is None):
             raise ValueError('The required Token is not set!')
 
         if (id is not None):
-            id_segment = ',-N' + id
+            id_segment = '-N' + id
         else:
-            id_segment = ','
+            id_segment = ''
 
         self.connection.request(
             'GET',
-            '/scripts/mgrqcgi?APPNAME=CampusNet&PRGNAME='
-                + programName
-                + '&ARGUMENTS='
-                + '-N' + self.token
-                + ',-N000019'
-                + id_segment,
+            '/scripts/mgrqcgi?APPNAME=CampusNet&PRGNAME=%s&ARGUMENTS=-N%s,-N000019,%s'%(
+                programName, self.token, id_segment
+            ),
             headers=self.stdHeader
         )
 
         response = self.connection.getresponse()
-
         return self._initial_parse(response)
 
     def post_raw(self, relative_url: str, data: object) -> (BeautifulSoup, HTTPResponse):
@@ -57,13 +52,14 @@ class RequestHelper:
 
         self.connection.request(
             'POST',
-            '/scripts/mgrqcgi' + relative_url,
+            '/scripts/mgrqcgi%s'%(
+                relative_url
+            ),
             body=data_urlencoded,
             headers=self.stdHeader
         )
 
         response = self.connection.getresponse()
-
         return self._initial_parse(response), response
 
     def _initial_parse(self, response):
@@ -72,7 +68,7 @@ class RequestHelper:
 
         response_soup = BeautifulSoup(response.read(), 'html.parser')
 
-        if (    response_soup.title is not None
+        if (    response_soup.title is not None  # because Dualis sometimes really doesn't care about anything
             and response_soup.title.string == 'Execution Error'
         ):
             if (response_soup.find('font', string=re.compile(r'.*(-131).*')) is not None):
@@ -82,26 +78,30 @@ class RequestHelper:
 
         if (response_soup.find('form', id='cn_loginForm') is not None):
             # if an error with the token or the login itself occurs, we get thrown back to the login page
-            # (in other cases we just get a page with nonsensical data back)
+            #  (in other error-cases we just get a page with nonsensical data back, which is not easily distinguishable
+            #  from a valid response)
             response_maincontent = response_soup.body.find('div', id='pageContent')
 
-            error_title = response_maincontent.h1
+            error_title = response_maincontent.find('h1')
             error_description = error_title.next_sibling
             error_title = self._remove_special_html_elements(error_title.string)
             error_description = self._remove_special_html_elements(error_description.string)
 
             raise RequestRejectedError(
-                'The Dualis System rejected the Request. Details: %s %s'
-                    %(error_title, '(' + error_description + ')' if (error_description != '') else '')
+                'The Dualis System rejected the Request. Details: %s%s'%(
+                    error_title, ' (' + error_description + ')' if (error_description != '') else ''
+                )
             )
 
         return response_soup
 
     def _remove_special_html_elements(self, string):
         string_without_htmltags = re.sub(r'(</?[a-zA-Z ]+/?>)', '', string)
-        return re.sub('&nbsp;', ' ', string_without_htmltags).strip('\n').strip()
+        string_without_special_elements = re.sub('&[a-zA-Z]+;', ' ', string_without_htmltags)
+        return string_without_special_elements.strip('\n').strip(' ')
+        #                                      ^ because i.e. the error-description has a dangling new-line
 
 
 class RequestRejectedError(Exception):
-    """An Exception thrown if the Dualis-System answered with an Error to our Request"""
+    """An Exception which gets thrown if the Dualis-System answered with an Error to our Request"""
     pass
