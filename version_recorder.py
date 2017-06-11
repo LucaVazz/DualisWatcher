@@ -1,6 +1,8 @@
 import os
 import subprocess
 
+from bs4 import BeautifulSoup
+
 
 class VersionRecorder:
     def __init__(self, dir_name: str):
@@ -49,7 +51,7 @@ class VersionRecorder:
             entries = entries_raw_without_final_linebreak.split('\n')
 
             added = []
-            deleted = []
+            deleted = {}
             modified = {}
 
             for entry in entries:
@@ -59,13 +61,22 @@ class VersionRecorder:
 
                 if (indicator == '??'):
                     added.append(file_name)
-                elif (indicator == ' D'):
-                    deleted.append(file_name)
-                elif (indicator == ' M'):
+                elif (indicator == ' D' or indicator == 'AD'):
+                    old_raw = self._sub_run_git(['--no-pager', 'diff', '--word-diff', '--', file_name])
+                    old_without_diff_marks = old_raw.replace('[-', '').replace('-]', '')
+                    old = old_without_diff_marks.split('@@\n')
+                    old = old[1]  # because we don't need the preface
+                    deleted.update( {file_name : old} )
+                elif (indicator == ' M' or indicator == 'AM'):
                     diff_raw = self._sub_run_git(['--no-pager', 'diff', '--word-diff', '--', file_name])
                     diffs = diff_raw.split('\n@@')
                     diffs = diffs[1:]  # because we don't need the preface
-                    modified.update( {file_name : diffs} )
+                    formated_diffs = []
+                    for diff in diffs:
+                        diff_lines = diff.split('\r\n')
+                        diff_lines[0] = '[Lines: ' + diff_lines[0].split(' @@')[0] + ']'
+                        formated_diffs.append('\n'.join(diff_lines))
+                    modified.update( {file_name : formated_diffs} )
                 else:
                     raise RuntimeError('Git diff reported an unexpected indicator!')
 
@@ -100,7 +111,7 @@ class VersionRecorder:
 
 
 class CollectionOfDiffIds:
-    def __init__(self, count: int, added: [str], deleted: [str], modified: {str : str}):
+    def __init__(self, count: int, added: [str], deleted: { str : str }, modified: {str : str}):
         self.diff_count = count
         self.added = added
         self.deleted = deleted
