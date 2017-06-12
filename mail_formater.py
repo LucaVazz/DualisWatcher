@@ -44,13 +44,7 @@ error_message_box = Template('''
     <table style="width: 100%; background-color: #ff3860; color: #fff; margin-bottom: 15px;">
         <tr>
             <td style="font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif; padding: 15px; padding-top: 7px; padding-bottom: 7px;">
-                <p>
-                    ${text}
-                </p>
-                <p style="margin-top: 7px; font-size: .8em;">
-                    <p>Stacktrace:</p>
-                    ${stacktrace}
-                </p>
+                    ${details}
             </td>
         </tr>
     </table>
@@ -207,5 +201,12 @@ def create_full_welcome_mail():
     content = info_message_box.substitute(text='Hurra, es funktioniert \\o/')
 
     full_content = _finish_with_main_wrapper(content, 'Willkommen! Test Test...')
+
+    return full_content
+
+def create_full_error_mail(details):
+    content = error_message_box.substitute(details=details)
+
+    full_content = _finish_with_main_wrapper(content, 'Bei der Ausführung ist der folgende Fehler aufgetreten:')
 
     return full_content
