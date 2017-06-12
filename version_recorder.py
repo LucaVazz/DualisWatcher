@@ -5,6 +5,10 @@ from bs4 import BeautifulSoup
 
 
 class VersionRecorder:
+    """
+    Saves teh states at different points in time as versions and provides utilities to detect changes
+    in the current state against the previous.
+    """
     def __init__(self, dir_name: str):
         self.is_creating_new_version = False
         self.dir = dir_name
@@ -22,6 +26,7 @@ class VersionRecorder:
             raise ValueError('A new version is already being made!')
 
         # we also want to detect if a page was deleted, so we delete all existing files
+        #  this way, when all currently present pages were saved, git notices that a file is missing
         for file in os.listdir(self.dir):
             file_path = os.path.join(self.dir, file)
             if os.path.isfile(file_path):  # i.e. ignore .git and other directories
@@ -56,6 +61,8 @@ class VersionRecorder:
 
             for entry in entries:
                 # an entry has the form of i.e. '?? asdf.txt' / ' M asdf.txt' / ' D asdf.txt'
+                #  (the 'AD' and 'AM' varaints indicate that these files were added in a previous
+                #  run but not yet persited as a new verions)
                 indicator = entry[0:2]
                 file_name = entry[3:]
 
@@ -87,7 +94,7 @@ class VersionRecorder:
         return CollectionOfDiffIds(changes_count, added, deleted, modified)
 
 
-    def save_new_version(self):
+    def persist_new_version(self):
         if (self.changes_of_new_version().diff_count > 0):
             os.chdir(self.dir)
             try:
@@ -107,7 +114,7 @@ class VersionRecorder:
         if (error != ''):
             raise RuntimeError(error)
 
-        return result.stdout.decode('ISO-8859-1')
+        return result.stdout.decode('ISO-8859-1')  # because of possible, wierdly encoded Umlauts
 
 
 class CollectionOfDiffIds:

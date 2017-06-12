@@ -2,6 +2,7 @@ from email.utils import make_msgid
 from string import Template
 
 from bs4 import BeautifulSoup
+
 from pygments import highlight
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers.html import HtmlLexer
@@ -9,12 +10,17 @@ from pygments.lexers.html import HtmlLexer
 from dualis_connector.results_handler import extract_course_name_from_result_page
 from version_recorder import CollectionOfDiffIds
 
+
+"""
+Encapsulates the formatting of the various notification-mails.
+"""
+
 # for the following template strings, viewer discretion is advised.
- # No, I personally don't want to write them with these ugly table layouts and inline styles.
- # But the mail clients leave me no other choice...
+# No, I personally don't want to write them with these ugly table layouts and inline styles.
+# But the mail clients leave me no other choice...
 
 main_wrapper = Template('''
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">    
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head></head>
     <body style="padding: 17px; background-color: #efefef; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
@@ -29,10 +35,10 @@ main_wrapper = Template('''
                     </td>
                 </tr></tbody>
             </table>
-    
+
             <div style="margin: 20px; margin-bottom: 0;">
                 <p>${introduction_text}</p>
-                    
+
                 ${content}
             </div>
         </div>
@@ -73,8 +79,8 @@ diff_added_box = Template('''
                     ${course_name}
                 </td>
                 <td style="width: 170px; font-align: center">
-                    <a style="border: 1px solid #e2001a; border-radius: 3px; padding: 3px; padding-left: 5px; padding-right: 7px; color: #e2001a; text-decoration: none !important;" 
-                        target="_blank"   
+                    <a style="border: 1px solid #e2001a; border-radius: 3px; padding: 3px; padding-left: 5px; padding-right: 7px; color: #e2001a; text-decoration: none !important;"
+                        target="_blank"
                         href="https://dualis.dhbw.de/scripts/mgrqcgi?APPNAME=CampusNet&PRGNAME=RESULTDETAILS&ARGUMENTS=-N${token},-N000307,-N${course_id}">
                         <span style="text-decoration: none !important; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">komplett anzeigen »</span>
                     </a>
@@ -112,8 +118,8 @@ diff_modified_box = Template('''
                     ${course_name}
                 </td>
                 <td style="width: 170px; font-align: center">
-                    <a style="border: 1px solid #e2001a; border-radius: 3px; padding: 3px; padding-left: 5px; padding-right: 7px; color: #e2001a; text-decoration: none !important;" 
-                        target="_blank"   
+                    <a style="border: 1px solid #e2001a; border-radius: 3px; padding: 3px; padding-left: 5px; padding-right: 7px; color: #e2001a; text-decoration: none !important;"
+                        target="_blank"
                         href="https://dualis.dhbw.de/scripts/mgrqcgi?APPNAME=CampusNet&PRGNAME=RESULTDETAILS&ARGUMENTS=-N${token},-N000307,-N${course_id}">
                         <span style="text-decoration: none !important; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">komplett anzeigen »</span>
                     </a>
@@ -134,7 +140,7 @@ diff_modified_box = Template('''
 def _format_code(html_code):
     # syntax highlighting:
     code_highlighted = highlight(html_code, HtmlLexer(), HtmlFormatter(style='monokai', noclasses=True))
-    # add formatting for diff-markers
+    # add formatting for diff-markers:
     common_diff_style = ' margin-right: 3px; padding-right: 7px; padding-left: 7px;'
     code_formatted = code_highlighted \
         .replace('[-', '<span style="background: #71332c;' + common_diff_style + '">') \
@@ -142,12 +148,14 @@ def _format_code(html_code):
         .replace('{+', '<span style="background: #2e4d28;' + common_diff_style + '">') \
         .replace('+}', '</span>')
 
+    # wrap in general layout:
     code_wrapped = '<div style="color: #efefef; margin: 3px; margin-left: 17px;line-height: 150%%;">%s</div>'\
                    %(code_formatted)
 
     return code_wrapped
 
-def _finish_with_main_wrapper(content: str, introduction: str):
+def _finish_with_main_wrapper(content: str, introduction: str) -> (str, {str : str}):
+    # cids link the attatched media-files to be displayed inline
     header_cid = make_msgid()
     extender_cid = make_msgid()
 
@@ -163,7 +171,7 @@ def _finish_with_main_wrapper(content: str, introduction: str):
     return (full_content, cids_and_filenames)
 
 
-def create_full_diff_mail(changes: CollectionOfDiffIds, results: {str : (str, str)}, token: str):
+def create_full_diff_mail(changes: CollectionOfDiffIds, results: {str : (str, str)}, token: str) -> (str, {str : str}):
     content = ''
 
     for added_element_id in changes.added:
@@ -197,14 +205,14 @@ def create_full_diff_mail(changes: CollectionOfDiffIds, results: {str : (str, st
 
     return full_content
 
-def create_full_welcome_mail():
+def create_full_welcome_mail() -> (str, {str : str}):
     content = info_message_box.substitute(text='Hurra, es funktioniert \\o/')
 
     full_content = _finish_with_main_wrapper(content, 'Willkommen! Test Test...')
 
     return full_content
 
-def create_full_error_mail(details):
+def create_full_error_mail(details) -> (str, {str : str}):
     content = error_message_box.substitute(details=details)
 
     full_content = _finish_with_main_wrapper(content, 'Bei der Ausführung ist der folgende Fehler aufgetreten:')

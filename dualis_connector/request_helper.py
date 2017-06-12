@@ -5,14 +5,18 @@ import re
 
 
 class RequestHelper:
+    """
+    Encapsulates the recurring logic for sending out requests to the Dualis-System.
+    """
     def __init__(self):
         self.connection = HTTPSConnection('dualis.dhbw.de')
         self.token = ''
         self.stdHeader = {
             'Cookie': 'cnsc=0',
-            # the Dualis System assumes by the presence of this field that we are ready to handle and store cookies
-            # yeah, right... we definitively do that...
-            # (no, we don't have to. Chrome is also sending cnsc=0 everytime and it works fine)
+            # the Dualis System assumes by the presence of this field that we are ready to handle
+            #   and store cookies
+            # Yeah, right... We definitively do that...
+            # (No, we don't have to. Chrome is also sending cnsc=0 everytime and it works fine)
         }
 
     def get_ressource(self, programName: str, id: str = None) -> BeautifulSoup:
@@ -68,7 +72,8 @@ class RequestHelper:
 
         response_soup = BeautifulSoup(response.read(), 'html.parser')
 
-        if (    response_soup.title is not None  # because Dualis sometimes really doesn't care about anything
+        if (    response_soup.title is not None  # because Dualis sometimes really doesn't care
+                                                 #  about anything
             and response_soup.title.string == 'Execution Error'
         ):
             if (response_soup.find('font', string=re.compile(r'.*(-131).*')) is not None):
@@ -95,11 +100,11 @@ class RequestHelper:
 
         return response_soup
 
-    def _remove_special_html_elements(self, string):
+    def _remove_special_html_elements(self, string) -> str:
         string_without_htmltags = re.sub(r'(</?[a-zA-Z ]+/?>)', '', string)
         string_without_special_elements = re.sub('&[a-zA-Z]+;', ' ', string_without_htmltags)
         return string_without_special_elements.strip('\n').strip(' ')
-        #                                      ^ because i.e. the error-description has a dangling new-line
+        #                                      ^ because i.e. the error-text has a dangling new-line
 
 
 class RequestRejectedError(Exception):

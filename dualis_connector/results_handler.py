@@ -2,6 +2,11 @@ from dualis_connector.request_helper import RequestHelper
 
 
 class ResultsHandler:
+    """
+    Fetches and parses the various sites in Dualis which are related to course results.
+
+    This is the most brittle part of the whole project.
+    """
     def __init__(self, request_helper: RequestHelper):
         self.request_helper = request_helper
 
@@ -21,7 +26,8 @@ class ResultsHandler:
 
         results = []
         course_entries = page.find('table', class_='nb list').find('tbody').findAll('tr')
-        #                                        ^ required by BeautifulSoup, because class is a reserved Python-keyword
+        #                                        ^ required by BeautifulSoup, because class is a
+        #                                          reserved Python-keyword
         course_entries_without_gpa = course_entries[:-1]
         for entry in course_entries_without_gpa:
             # we need to extract the course id from the link to open the view

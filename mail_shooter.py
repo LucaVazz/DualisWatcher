@@ -4,12 +4,15 @@ from email.headerregistry import Address
 from email.utils import make_msgid
 
 class MailShooter:
-    def __init__(sef, sender: str, smtp_server_host: str, smtp_server_port: int, username: str, password: str):
-        sef.sender = sender
-        sef.smtp_server_host = smtp_server_host
-        sef.smtp_server_port = smtp_server_port
-        sef.username = username
-        sef.password = password
+    """
+    Encapsulates the sending of notifcation-mails.
+    """
+    def __init__(self, sender: str, smtp_server_host: str, smtp_server_port: int, username: str, password: str):
+        self.sender = sender
+        self.smtp_server_host = smtp_server_host
+        self.smtp_server_port = smtp_server_port
+        self.username = username
+        self.password = password
 
     def send(self, target: str, subject: str, html_content_with_cids: str, inline_png_cids_filenames: {str : str}):
         msg = EmailMessage()

@@ -1,10 +1,8 @@
-# Dualis API
+# Dualis: Structural Documentation
 
-> "You call this an API?! This is an abomination!"
->
-> Well, yeah... Dualis was definitively not meant to be used this way, but do I give the impression that I care about that at all?
+> Well, yeah... Dualis was definitively not meant to be used this way, but do I really give the impression that I care about that at all?
 
-This document deliberately is only a MWE for handling the Dualis-Application.
+This document is very hacky and the contained assumptions are prone to break at any time.
 
 
 ### General Behaviour

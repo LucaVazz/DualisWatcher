@@ -3,10 +3,13 @@ import os
 
 
 class ConfigHelper:
+    """
+    Handles the saving, formating and loading of the local configuration.
+    """
     def __init__(self):
         self._whole_config = {}
 
-    def is_present(self):
+    def is_present(self) -> bool:
         return os.path.isfile('config.json')
 
     def load(self):
