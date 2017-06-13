@@ -1,6 +1,6 @@
 # DualisWatcher
 
-> Because refreshing the same page manually every few days is just to ~easy~ inefficient.
+> Because refreshing the same page manually every few days is just ~~way too easy~~ inefficient.
 
 ### Disclaimer
 *This software is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Duale Hochschule Baden-Württemberg or Datenlotsen Informationssysteme GmbH or any of its subsidiaries or its affiliates.*    
@@ -20,9 +20,11 @@
     - It doesn't print out any console output, but it writes `DualisWatcher.log`.
 - `pythin main.py --init`
     - Guides you trough the configuration of the software, including the activation of mail-notifications and obtainment of a login-token for your Dualis-Account.
+    - It also fetches the current state of your Dualis-Account. (But it will not check for any changes to a possible previous state.)
     - It prints all information into the console.
 - `python main.py --new-token`
     - Overrides the login-token with a newly obtained one.
+    - It does not fetch the current state of your Dualis-Account.
     - Use it if at any point in time, for whatever reason, the saved token gets rejected by Dualis.
     - Doesn't change any of the other settings (contrary to `--init`).
     - It prints all information into the console.
