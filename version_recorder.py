@@ -108,7 +108,10 @@ class VersionRecorder:
     @staticmethod
     def _sub_run_git(commands: []) -> str:
         commands.insert(0, 'git')
-        result = subprocess.run(commands, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        result = subprocess.run(
+            commands, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            shell=(os.name == 'nt')  # True if the program runs on Windows, otherwise False
+        )
 
         error = result.stderr.decode('utf-8')
         if (error != ''):
