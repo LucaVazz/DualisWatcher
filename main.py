@@ -105,6 +105,8 @@ def run_main():
         format='%(asctime)s  %(levelname)s  {%(module)s}  %(message)s', datefmt='%Y-%m-%d %H:%M:%S'
     )
 
+    logging.info('--- main run started ---------------------')
+
     try:
         logging.debug('Loading config...')
         config = ConfigHelper()
