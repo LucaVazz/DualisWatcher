@@ -83,7 +83,7 @@ def run_init():
     print(
           '  To set a cron-job for this program on your Unix-System:\n'
         + '    `crontab -e`\n'
-        + '    add `15 * * * * %s\main.py`\n'%(os.path.dirname(os.path.realpath(__file__)))
+        + '    add `15 * * * * python3 %s/main.py`\n'%(os.path.dirname(os.path.realpath(__file__)))
         + '    save and done!'
     )
 
