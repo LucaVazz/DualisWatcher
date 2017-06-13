@@ -64,7 +64,7 @@ class VersionRecorder:
                 indicator = entry[0:2]
                 file_name = entry[3:]
 
-                if (indicator == '??'):
+                if (indicator == '??' or indicator == 'A '):
                     added.append(file_name)
                 elif (indicator == ' D' or indicator == 'AD'):
                     old_raw = self._sub_run_git(['--no-pager', 'diff', '--word-diff', '--', file_name])
@@ -99,7 +99,7 @@ class VersionRecorder:
             os.chdir(self.dir)
             try:
                 self._sub_run_git(['add', '.'])
-                self._sub_run_git(['commit', '-m "new version!"', '--author="FileRecorder<no-reply@localhost>"'])
+                self._sub_run_git(['commit', '-m "new version!"', '--author="FileRecorder <no-reply@localhost>"'])
             finally:
                 os.chdir('..')
 
