@@ -1,8 +1,6 @@
 import os
 import subprocess
 
-from bs4 import BeautifulSoup
-
 
 class VersionRecorder:
     """
@@ -85,7 +83,9 @@ class VersionRecorder:
                         formated_diffs.append('\n'.join(diff_lines))
                     modified.update( {file_name : formated_diffs} )
                 else:
-                    raise RuntimeError('Git diff reported an unexpected indicator!')
+                    raise RuntimeError(
+                        'Git diff reported an unexpected indicator (%s)!'%(indicator)
+                    )
 
             changes_count = len(added) + len(deleted) + len(modified)
         finally:
