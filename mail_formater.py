@@ -2,14 +2,12 @@ from email.utils import make_msgid
 from string import Template
 
 from bs4 import BeautifulSoup
-
 from pygments import highlight
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers.html import HtmlLexer
 
 from dualis_connector.results_handler import extract_course_name_from_result_page
 from version_recorder import CollectionOfDiffIds
-
 
 """
 Encapsulates the formatting of the various notification-mails.
@@ -23,8 +21,8 @@ main_wrapper = Template('''
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head></head>
-    <body style="padding: 17px; background-color: #efefef; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
-        <div style="background-color: #fefefe; border: 1px solid #dfdede;">
+    <body style="padding: 17px; background-color: #fefefe; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
+        <div style="background-color: #ffffff; border: 1px solid #dfdede;">
             <table border-spacing="0" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 17px; width: 100%; border-spacing: 0;">
                 <tbody><tr>
                     <td style="vertical-align: middle; width: 400px; padding: 0; margin: 0;">

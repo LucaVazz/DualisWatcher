@@ -1,7 +1,8 @@
-from http.client import HTTPSConnection, HTTPResponse
-import urllib
-from bs4 import BeautifulSoup
 import re
+import urllib
+from http.client import HTTPSConnection, HTTPResponse
+
+from bs4 import BeautifulSoup
 
 
 class RequestHelper:
@@ -17,6 +18,8 @@ class RequestHelper:
             #   and store cookies
             # Yeah, right... We definitively do that...
             # (No, we don't have to. Chrome is also sending cnsc=0 everytime and it works fine)
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+            # copied straight out of Chrome
         }
 
     def get_ressource(self, programName: str, id: str = None) -> BeautifulSoup:
