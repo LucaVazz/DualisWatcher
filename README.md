@@ -8,10 +8,11 @@
 
 ### Setup
 1. Install [git](https://git-scm.com/) >2.12
-2. Install [Python](https://www.python.org/) >3.6
-3. `pip install beautifulsoup4`
-4. `pip install pygments`
-5. run `python main.py --init`
+2. Install [Python](https://www.python.org/) >3.6 `apt-get install python3 && apt-get install python3-pip`
+3. Verify that `python --version` shows a version equal to or higher then 3.5.0 Otherrwise use [pyenv](https://github.com/pyenv/pyenv#installation) to install version 3.5.3
+3. `pip3 install beautifulsoup4`
+4. `pip3 install pygments`
+5. run `python3 main.py --init`
 
 ### Usage
 - `python main.py`
