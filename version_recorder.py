@@ -16,6 +16,8 @@ class VersionRecorder:
             os.chdir(dir_name)
             try:
                 self._sub_run_git(['init'])
+                self._sub_run_git(['config', 'user.name', '"FileRecorder"'])
+                self._sub_run_git(['config', 'user.email', '"no-reply@localhost"'])
             finally:
                 os.chdir('..')
 
@@ -99,7 +101,7 @@ class VersionRecorder:
             os.chdir(self.dir)
             try:
                 self._sub_run_git(['add', '.'])
-                self._sub_run_git(['commit', '-m "new version!"', '--author="FileRecorder <no-reply@localhost>"'])
+                self._sub_run_git(['commit', '-m "new version!"'])
             finally:
                 os.chdir('..')
 
