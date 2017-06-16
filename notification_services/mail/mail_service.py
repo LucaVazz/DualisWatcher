@@ -17,23 +17,31 @@ class MailService(NotificationService):
 
         if do_mail_input == 'y':
             print('[The following Inputs are not validated!]')
-            sender = input('E-Mail-Address of the Sender:   ')
-            server_host = input('Host of the SMTP-Server:   ')
-            server_port = input('Port of the SMTP-Server:   ')
-            username = input('Username for the SMTP-Server:   ')
-            password = getpass('Password for the SMTP-Server [no output]:   ')
-            target = input('E-Mail-Address of the Target:   ')
 
-            print('Testing Mail-Config...')
-            welcome_content = create_full_welcome_mail()
-            mail_shooter = MailShooter(
-                sender, server_host, int(server_port), username, password
-            )
-            mail_shooter.send(target, 'Hey!', welcome_content[0], welcome_content[1])
-            input(
-                'Please check if you received the Welcome-Mail. If yes, confirm with Return.\n'
-                + 'If not, exit this program and start again.'
-            )
+            config_valid = False
+            while not config_valid:
+                sender = input('E-Mail-Address of the Sender:   ')
+                server_host = input('Host of the SMTP-Server:   ')
+                server_port = input('Port of the SMTP-Server:   ')
+                username = input('Username for the SMTP-Server:   ')
+                password = getpass('Password for the SMTP-Server [no output]:   ')
+                target = input('E-Mail-Address of the Target:   ')
+
+                print('Testing Mail-Config...')
+                welcome_content = create_full_welcome_mail()
+                mail_shooter = MailShooter(
+                    sender, server_host, int(server_port), username, password
+                )
+                try:
+                    mail_shooter.send(target, 'Hey!', welcome_content[0], welcome_content[1])
+                except BaseException as e:
+                    print('Error while sending the test mail: %s'%(str(e)))
+                else:
+                    input(
+                        'Please check if you received the Welcome-Mail. If yes, confirm with Return.\n'
+                        + 'If not, exit this program ([CTRL]+[C]) and try again later.'
+                    )
+                    config_valid = True
 
             mail_cfg = {
                 'sender': sender,

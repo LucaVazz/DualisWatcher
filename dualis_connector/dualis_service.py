@@ -74,7 +74,7 @@ class DualisService:
 
         recorder = VersionRecorder('_course-results')
         recorder.start_new_version()
-        for course_id, result_soup in results:
+        for course_id, result_soup in results.items():
             recorder.save_file(course_id, result_soup.prettify())
         recorder.persist_new_version()
 
