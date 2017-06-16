@@ -1,7 +1,7 @@
+import os
 import smtplib
 from email.message import EmailMessage
-from email.headerregistry import Address
-from email.utils import make_msgid
+
 
 class MailShooter:
     """
@@ -27,7 +27,10 @@ class MailShooter:
         )
 
         for png_cid in inline_png_cids_filenames:
-            with open(inline_png_cids_filenames[png_cid], 'rb') as png_file:
+            full_path_to_png = os.path.abspath(os.path.join(
+                os.path.dirname(__file__), inline_png_cids_filenames[png_cid]
+            ))
+            with open(full_path_to_png, 'rb') as png_file:
                 file_contents = png_file.read()
                 msg.get_payload()[1].add_related(file_contents, 'image', 'png', cid=png_cid)
 

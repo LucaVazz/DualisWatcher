@@ -39,7 +39,7 @@ class VersionRecorder:
         with open(os.path.join(self.dir, file_id), 'w+') as f:
             f.write(content)
 
-    def changes_of_new_version(self) -> 'CollectionOfDiffIds':
+    def changes_of_new_version(self) -> 'CollectionOfChanges':
         if (not self.is_creating_new_version):
             raise ValueError('You need to start the creation of a new version and add files to detect the changes!')
 
@@ -48,7 +48,7 @@ class VersionRecorder:
             entries_raw = self._sub_run_git(['status', '--short'])
 
             if (entries_raw == ''):
-                return CollectionOfDiffIds(0, [], [], {})
+                return CollectionOfChanges(0, [], [], {})
 
             entries_raw_without_final_linebreak = entries_raw[:-1]
             entries = entries_raw_without_final_linebreak.split('\n')
@@ -66,13 +66,13 @@ class VersionRecorder:
 
                 if (indicator == '??' or indicator == 'A '):
                     added.append(file_name)
-                elif (indicator == ' D' or indicator == 'AD'):
+                elif (indicator == ' D' or indicator == 'AD' or indicator == 'D '):
                     old_raw = self._sub_run_git(['--no-pager', 'diff', '--word-diff', '--', file_name])
                     old_without_diff_marks = old_raw.replace('[-', '').replace('-]', '')
                     old = old_without_diff_marks.split('@@\n')
                     old = old[1]  # because we don't need the preface
                     deleted.update( {file_name : old} )
-                elif (indicator == ' M' or indicator == 'AM'):
+                elif (indicator == ' M' or indicator == 'AM' or indicator == 'M '):
                     diff_raw = self._sub_run_git(['--no-pager', 'diff', '--word-diff', '--', file_name])
                     diffs = diff_raw.split('\n@@')
                     diffs = diffs[1:]  # because we don't need the preface
@@ -91,7 +91,7 @@ class VersionRecorder:
         finally:
             os.chdir('..')
 
-        return CollectionOfDiffIds(changes_count, added, deleted, modified)
+        return CollectionOfChanges(changes_count, added, deleted, modified)
 
 
     def persist_new_version(self):
@@ -120,7 +120,7 @@ class VersionRecorder:
         return result.stdout.decode('ISO-8859-1')  # because of possible, wierdly encoded Umlauts
 
 
-class CollectionOfDiffIds:
+class CollectionOfChanges:
     def __init__(self, count: int, added: [str], deleted: { str : str }, modified: {str : str}):
         self.diff_count = count
         self.added = added

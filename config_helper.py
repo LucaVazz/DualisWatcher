@@ -4,7 +4,7 @@ import os
 
 class ConfigHelper:
     """
-    Handles the saving, formating and loading of the local configuration.
+    Handles the saving, formatting and loading of the local configuration.
     """
     def __init__(self):
         self._whole_config = {}
@@ -25,22 +25,12 @@ class ConfigHelper:
             config_formatted = json.dumps(self._whole_config, indent=4)
             f.write(config_formatted)
 
-    def get_mail_config(self) -> {str : str}:
+    def get_property(self, key: str) -> any:
         try:
-            return self._whole_config['mail']
+            return self._whole_config[key]
         except KeyError:
-            raise ValueError('Mail-Config is not yet configured!')
+            raise ValueError('The %s-Property is not yet configured!'%(key))
 
-    def set_mail_config(self, config: {str: str}):
-        self._whole_config.update({'mail': config})
-        self._save()
-
-    def get_token(self) -> str:
-        try:
-            return self._whole_config['token']
-        except KeyError:
-            raise ValueError('A token is not yet configured!')
-
-    def set_token(self, token: str):
-        self._whole_config.update({'token': token})
+    def set_property(self, key: str, value: any):
+        self._whole_config.update({key: value})
         self._save()

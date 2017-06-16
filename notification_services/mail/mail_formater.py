@@ -7,7 +7,7 @@ from pygments.formatters.html import HtmlFormatter
 from pygments.lexers.html import HtmlLexer
 
 from dualis_connector.results_handler import extract_course_name_from_result_page
-from version_recorder import CollectionOfDiffIds
+from version_recorder import CollectionOfChanges
 
 """
 Encapsulates the formatting of the various notification-mails.
@@ -169,12 +169,12 @@ def _finish_with_main_wrapper(content: str, introduction: str) -> (str, {str : s
     return (full_content, cids_and_filenames)
 
 
-def create_full_diff_mail(changes: CollectionOfDiffIds, results: {str : (str, str)}, token: str) -> (str, {str : str}):
+def create_full_diff_mail(changes: CollectionOfChanges, course_names: {str, str}, token: str) -> (str, {str : str}):
     content = ''
 
     for added_element_id in changes.added:
         content += diff_added_box.substitute(
-            course_id=added_element_id, course_name=results[added_element_id][1], token=token
+            course_id=added_element_id, course_name=course_names[added_element_id], token=token
         )
 
     for deleted_element_id in changes.deleted:
@@ -193,7 +193,7 @@ def create_full_diff_mail(changes: CollectionOfDiffIds, results: {str : (str, st
             inner_diffs += _format_code(fragment)
 
         content += diff_modified_box.substitute(
-            course_id=modified_element_id, course_name=results[modified_element_id][1],
+            course_id=modified_element_id, course_name=course_names[modified_element_id],
             code_content=inner_diffs, token=token
         )
 

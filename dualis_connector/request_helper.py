@@ -9,9 +9,9 @@ class RequestHelper:
     """
     Encapsulates the recurring logic for sending out requests to the Dualis-System.
     """
-    def __init__(self):
+    def __init__(self, token = ''):
         self.connection = HTTPSConnection('dualis.dhbw.de')
-        self.token = ''
+        self.token = token
         self.stdHeader = {
             'Cookie': 'cnsc=0',
             # the Dualis System assumes by the presence of this field that we are ready to handle
