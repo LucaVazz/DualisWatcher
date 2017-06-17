@@ -76,7 +76,7 @@ class MailService(NotificationService):
             )
         except:
             error_formatted = traceback.format_exc()
-            logging.error('While sending notification:\n%s'%(error_formatted))
+            logging.error('While sending notification:\n%s'%(error_formatted), extra={'exception':e})
             pass  # ignore the exception further up
 
     def notify_about_error(self, error_description: str):
@@ -99,5 +99,5 @@ class MailService(NotificationService):
             )
         except:
             error_formatted = traceback.format_exc()
-            logging.error('While sending notification:\n%s' % (error_formatted))
+            logging.error('While sending notification:\n%s' % (error_formatted), extra={'exception':e})
             pass  # ignore the exception further up

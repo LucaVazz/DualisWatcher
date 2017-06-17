@@ -11,6 +11,17 @@ from dualis_connector.dualis_service import DualisService
 from notification_services.mail.mail_service import MailService
 
 
+class ReRaiseOnError(logging.StreamHandler):
+    """
+    A logging-handler class which allows the exception-catcher of i.e. PyCharm to intervine
+    """
+    def emit(self, record):
+        if hasattr(record, 'exception'):
+            raise record.exception
+        else:
+            raise RuntimeError(record.msg)
+
+
 def run_init():
     config = ConfigHelper()
 
@@ -46,7 +57,7 @@ def run_new_token():
     config = ConfigHelper()
     config.load()  # because we do not want to override the other settings
 
-    DualisService().interactively_acquire_token()
+    DualisService(config).interactively_acquire_token()
 
     print('New Token successfully saved!')
 
@@ -57,13 +68,19 @@ def run_main():
     )
 
     logging.info('--- main started ---------------------')
+    if IS_DEBUG:
+        logging.info('Debug-Mode detected. Errors will not be logged but instead re-risen.')
+        debug_logger = logging.getLogger()
+        debug_logger.setLevel(logging.ERROR)
+        debug_logger.addHandler(ReRaiseOnError())
+        logging.info('nice')
 
     try:
         logging.debug('Loading config...')
         config = ConfigHelper()
         config.load()
-    except:
-        logging.error('Error while trying to load the Configuration! Exiting...')
+    except BaseException as e:
+        logging.error('Error while trying to load the Configuration! Exiting...', extra={'exception':e})
         sys.exit(-1)
 
     mail_service = MailService(config)
@@ -87,14 +104,21 @@ def run_main():
 
         logging.debug('All done. Exiting...')
     except BaseException as e:
-        raise e
         error_formatted = traceback.format_exc()
-        logging.error(error_formatted)
+        logging.error(error_formatted, extra={'exception':e})
         mail_service.notify_about_error(str(e))
-        logging.debug('Exception-Handling completed. Exiting...')
+        logging.debug('Exception-Handling completed. Exiting...', extra={'exception':e})
+        sys.exit(-1)
 
 
 # --- called at the program invocation: ---------------------
+IS_DEBUG = False
+
+if 'pydevd' in sys.modules:
+    IS_DEBUG = True
+    print('[RUNNING IN DEBUG-MODE!]')
+
+
 if len(sys.argv) == 2:
     if sys.argv[1] == '--init':
         run_init()
