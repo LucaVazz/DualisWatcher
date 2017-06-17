@@ -163,12 +163,13 @@ if len(sys.argv) == 2:
         run_change_schedule_watcher()
     elif sys.argv[1] == '--change-notification-mail':
         run_change_notification_mail()
-    else:
-        print(
-              'Unrecognized argument passed!'
-            + '\n  Possible arguments: None, `--init`, `--new-token`, `--change-schedule-watcher`, '
-            + '`--change-notification-mail`'
-        )
-        sys.exit(-1)
-else:
+elif len(sys.argv) == 1:
+    # the name of the executed file always gets passed
     run_main()
+else:
+    print(
+          'Unrecognized argument or combination of arguments passed!'
+        + '\n  Possible arguments: None, `--init`, `--new-token`, `--change-schedule-watcher`, '
+        + '`--change-notification-mail`'
+    )
+    sys.exit(-1)
