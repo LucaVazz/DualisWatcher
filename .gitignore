@@ -1,6 +1,8 @@
 /.idea
 __pycache__
 
-/_course-results
 config.json
-/DualisWatcher.log
+DualisWatcher.log
+
+/_course-results
+/_schedule

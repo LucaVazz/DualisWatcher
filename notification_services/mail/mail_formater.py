@@ -66,7 +66,7 @@ info_message_box = Template('''
     </table>
 ''')
 
-diff_added_box = Template('''
+diff_dualis_added_box = Template('''
     <div style="margin-top: 17px; margin-bottom: 7px; padding: 15px;">
         <table style="width: 100%;">
             <tbody><tr>
@@ -88,7 +88,7 @@ diff_added_box = Template('''
     </div>
 ''')
 
-diff_deleted_box = Template('''
+diff_dualis_deleted_box = Template('''
     <div style="margin-top: 17px; margin-bottom: 7px; padding: 15px;">
         <table style="width: 100%;">
             <tbody><tr>
@@ -105,7 +105,7 @@ diff_deleted_box = Template('''
     </div>
 ''')
 
-diff_modified_box = Template('''
+diff_dualis_modified_box = Template('''
     <div style="margin-top: 17px; margin-bottom: 7px; padding: 15px;">
         <table style="width: 100%;">
             <tbody><tr>
@@ -130,6 +130,27 @@ diff_modified_box = Template('''
                     ${code_content}
                 </td>
             </tr>
+        </table>
+    </div>
+''')
+
+diff_schedule_modified_box = Template('''
+    <div style="margin-bottom: 7px; padding: 15px;">
+        <table style="margin-top: 10px; background: #272822">
+            <tr>
+                <td>
+                    ${code_content}
+                </td>
+            </tr>
+        </table>
+        <table style="padding-top: 14px; padding-left: 7px;">
+            <tr><td>
+                <a style="border: 1px solid #e2001a; border-radius: 3px; padding: 3px; padding-left: 5px; padding-right: 7px; color: #e2001a; text-decoration: none !important;"
+                    target="_blank"
+                    href="http://vorlesungsplan.dhbw-mannheim.de/index.php?action=view&gid=3067001&uid=${uid}">
+                    <span style="text-decoration: none !important; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">Kalendar anzeigen »</span>
+                </a>
+            </td></tr>
         </table>
     </div>
 ''')
@@ -169,11 +190,11 @@ def _finish_with_main_wrapper(content: str, introduction: str) -> (str, {str : s
     return (full_content, cids_and_filenames)
 
 
-def create_full_diff_mail(changes: CollectionOfChanges, course_names: {str, str}, token: str) -> (str, {str : str}):
+def create_full_dualis_diff_mail(changes: CollectionOfChanges, course_names: {str, str}, token: str) -> (str, {str : str}):
     content = ''
 
     for added_element_id in changes.added:
-        content += diff_added_box.substitute(
+        content += diff_dualis_added_box.substitute(
             course_id=added_element_id, course_name=course_names[added_element_id], token=token
         )
 
@@ -182,7 +203,7 @@ def create_full_diff_mail(changes: CollectionOfChanges, course_names: {str, str}
             BeautifulSoup(changes.deleted[deleted_element_id], 'html.parser')
         )
 
-        content += diff_deleted_box.substitute(
+        content += diff_dualis_deleted_box.substitute(
             course_id=deleted_element_id, course_name=deleted_name
         )
 
@@ -192,13 +213,30 @@ def create_full_diff_mail(changes: CollectionOfChanges, course_names: {str, str}
         for fragment in inner_diffs_fragments:
             inner_diffs += _format_code(fragment)
 
-        content += diff_modified_box.substitute(
+        content += diff_dualis_modified_box.substitute(
             course_id=modified_element_id, course_name=course_names[modified_element_id],
             code_content=inner_diffs, token=token
         )
 
     full_content = _finish_with_main_wrapper(
-        content, 'Es wurden Änderungen an %s Modulen festgestellt:' % (changes.diff_count)
+        content, 'Es wurden Änderungen an %s Modulen festgestellt:'%(changes.diff_count)
+    )
+
+    return full_content
+
+def create_full_schedule_diff_mail(changes: [str], uid: str) -> (str, {str : str}):
+    content = ''
+
+    inner_diffs = ''
+    for fragment in changes:
+        inner_diffs += _format_code(fragment)
+
+    content += diff_schedule_modified_box.substitute(
+        code_content=inner_diffs, uid=uid
+    )
+
+    full_content = _finish_with_main_wrapper(
+        content, 'Es wurden die folgenden %s Änderungen festgestellt:'%(len(changes))
     )
 
     return full_content

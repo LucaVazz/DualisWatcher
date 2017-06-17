@@ -81,7 +81,6 @@ class VersionRecorder:
                     formated_diffs = []
                     for diff in diffs:
                         diff_lines = diff.split('\r\n')
-                        diff_lines[0] = '[Lines: ' + diff_lines[0].split(' @@')[0] + ']'
                         formated_diffs.append('\n'.join(diff_lines))
                     modified.update( {file_name : formated_diffs} )
                 else:
@@ -123,7 +122,7 @@ class VersionRecorder:
 
 
 class CollectionOfChanges:
-    def __init__(self, count: int, added: [str], deleted: { str : str }, modified: {str : str}):
+    def __init__(self, count: int, added: [str], deleted: {str : str}, modified: {str : [str]}):
         self.diff_count = count
         self.added = added
         self.deleted = deleted

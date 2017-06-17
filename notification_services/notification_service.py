@@ -24,13 +24,21 @@ class NotificationService:
     @abstractmethod
     def notify_about_changes_in_results(self, changes: CollectionOfChanges, course_names: {str : str}, token: str) -> None:
         """
-        Sends out a Notification to inform about detected changes.
+        Sends out a Notification to inform about detected changes for the Dualis-Account.
         The caller shouldn't care about if the sending was successful.
         @param changes: The detected changes.
         @param course_names: A dictionary of course-ids and their names.
         @param token: A Login-Token for Dualis to enable deep links into the Dualis-Website.
         """
         pass
+
+    @abstractmethod
+    def notify_about_changes_in_schedule(self, changes: [str], uid: str):
+        """
+        Sends out a Notification to inform about detected changes for the DHBW Mannheim Schedule.
+        The caller shouldn't care about if the sending was successful.
+        @param changes: The detected changes.
+        """
 
     @abstractmethod
     def notify_about_error(self, error_description: str) -> None:

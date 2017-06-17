@@ -72,11 +72,10 @@ class DualisService:
         """
         results = self._fetch_state()[0]
 
-        recorder = VersionRecorder('_course-results')
-        recorder.start_new_version()
+        self.recorder.start_new_version()
         for course_id, result_soup in results.items():
-            recorder.save_file(course_id, result_soup.prettify())
-        recorder.persist_new_version()
+            self.recorder.save_file(course_id, result_soup.prettify())
+        self.recorder.persist_new_version()
 
     def fetch_and_check_state(self) -> (CollectionOfChanges, {str : str}):
         """

@@ -7,6 +7,7 @@ import sys
 import traceback
 
 from config_helper import ConfigHelper
+from dhbw_ma_schedule_connector.schedule_service import ScheduleService
 from dualis_connector.dualis_service import DualisService
 from notification_services.mail.mail_service import MailService
 
@@ -38,10 +39,15 @@ def run_init():
     dualis = DualisService(config)
     dualis.interactively_acquire_token()
 
+    schedule = ScheduleService(config)
+    is_schedule_activated = schedule.interactively_configure()
+
     print('Configuration finished and saved!')
 
-    print('Fetching current state of Dualis...')
+    print('Fetching current states as base...')
     dualis.fetch_and_save_unchecked_state()
+    if is_schedule_activated:
+        schedule.fetch_and_save_unchecked_state()
     print('done!')
 
     print(
@@ -73,7 +79,6 @@ def run_main():
         debug_logger = logging.getLogger()
         debug_logger.setLevel(logging.ERROR)
         debug_logger.addHandler(ReRaiseOnError())
-        logging.info('nice')
 
     try:
         logging.debug('Loading config...')
@@ -88,26 +93,36 @@ def run_main():
     try:
         dualis = DualisService(config)
 
+        logging.debug('Checking for changes for the configured Dualis-Account....')
         results = dualis.fetch_and_check_state()
         changes = results[0]
         course_names = results[1]
 
         if changes.diff_count > 0:
-            logging.info('%s changes found!'%(changes.diff_count))
-
+            logging.info('%s changes found for the configured Dualis-Account.'%(changes.diff_count))
             token = dualis.get_token()
             mail_service.notify_about_changes_in_results(changes, course_names, token)
-
             dualis.save_state()
         else:
-            logging.info('No changes found.')
+            logging.info('No changes found for the configured Dualis-Account.')
+
+        schedule = ScheduleService(config)
+        if schedule.is_activated:
+            logging.debug('Checking for changes for the configured Schedule...')
+            changes = schedule.fetch_and_check_state()
+            if len(changes) > 0:
+                logging.info('%s changes found for the configured Schedule.'%(len(changes)))
+                mail_service.notify_about_changes_in_schedule(changes, schedule.uid)
+                schedule.save_state()
+            else:
+                logging.info('No changes found for the configured Schedule.')
 
         logging.debug('All done. Exiting...')
     except BaseException as e:
         error_formatted = traceback.format_exc()
         logging.error(error_formatted, extra={'exception':e})
         mail_service.notify_about_error(str(e))
-        logging.debug('Exception-Handling completed. Exiting...', extra={'exception':e})
+        logging.debug('Exception-Handling completed. Exiting...', extra={'exception' : e})
         sys.exit(-1)
 
 
