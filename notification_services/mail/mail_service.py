@@ -15,7 +15,9 @@ class MailService(NotificationService):
         while not (do_mail_input == 'y' or do_mail_input == 'n'):
             do_mail_input = input('Unrecognized input. Try again:   ')
 
-        if do_mail_input == 'y':
+        if do_mail_input == 'n':
+            self.config_helper.remove_property('mail')
+        else:
             print('[The following Inputs are not validated!]')
 
             config_valid = False

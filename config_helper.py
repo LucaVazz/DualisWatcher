@@ -34,3 +34,8 @@ class ConfigHelper:
     def set_property(self, key: str, value: any):
         self._whole_config.update({key: value})
         self._save()
+
+    def remove_property(self, key):
+        self._whole_config.pop(key, None)
+        #                           ^ behaviour if the key is not present
+        self._save()

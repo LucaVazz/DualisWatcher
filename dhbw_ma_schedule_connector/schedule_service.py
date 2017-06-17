@@ -32,6 +32,7 @@ class ScheduleService:
 
         if do_config_input == 'n':
             self.is_activated = False
+            self.config_helper.remove_property('schedule')
         else:
             print(
                   'Go to `http://vorlesungsplan.dhbw-mannheim.de/ical.php` and select your course.'

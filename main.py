@@ -67,6 +67,27 @@ def run_new_token():
 
     print('New Token successfully saved!')
 
+def run_change_schedule_watcher():
+    config = ConfigHelper()
+    config.load()
+
+    schedule = ScheduleService(config)
+
+    schedule.interactively_configure()
+    print('Configuration successfully updated!')
+
+    print('Fetching current states as base...')
+    schedule.fetch_and_save_unchecked_state()
+    print('done!')
+
+def run_change_notification_mail():
+    config = ConfigHelper()
+    config.load()
+
+    MailService(config).interactively_configure()
+
+    print('Configuration successfully updated!')
+
 def run_main():
     logging.basicConfig(
         filename='DualisWatcher.log', level=logging.DEBUG,
@@ -133,14 +154,21 @@ if 'pydevd' in sys.modules:
     IS_DEBUG = True
     print('[RUNNING IN DEBUG-MODE!]')
 
-
 if len(sys.argv) == 2:
     if sys.argv[1] == '--init':
         run_init()
     elif sys.argv[1] == '--new-token':
         run_new_token()
+    elif sys.argv[1] == '--change-schedule-watcher':
+        run_change_schedule_watcher()
+    elif sys.argv[1] == '--change-notification-mail':
+        run_change_notification_mail()
     else:
-        print('Unrecognized argument passed!\n  Possible arguments: None, `--init`, `--new-token`')
+        print(
+              'Unrecognized argument passed!'
+            + '\n  Possible arguments: None, `--init`, `--new-token`, `--change-schedule-watcher`, '
+            + '`--change-notification-mail`'
+        )
         sys.exit(-1)
 else:
     run_main()
