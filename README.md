@@ -2,9 +2,18 @@
 
 > Because refreshing the same page manually every few days is just ~~way too easy~~ inefficient.
 
+
 ### Disclaimer
 *This software is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Duale Hochschule Baden-Württemberg or Datenlotsen Informationssysteme GmbH or any of its subsidiaries or its affiliates.*    
 *This software is provided "as is" and any expressed or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the author or additional contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption).*
+
+
+### Features
+- Watch your Dualis Account for additions, deletions or changes to your course results.
+- Optionally also watch a DHBW Mannheim Schedule for changes.
+- Optionally get notified via mail about these changes.
+- Save yourself precious time through all these nice features.
+
 
 ### Setup
 1. Install [git](https://git-scm.com/) >2.12
@@ -13,6 +22,7 @@
 3. `pip3 install beautifulsoup4`
 4. `pip3 install pygments`
 5. run `python3 main.py --init`
+
 
 ### Usage
 - `python main.py`
@@ -29,6 +39,14 @@
     - Use it if at any point in time, for whatever reason, the saved token gets rejected by Dualis.
     - Doesn't change any of the other settings (contrary to `--init`).
     - It prints all information into the console.
+- `python main.py --change-schedule-watcher`
+    - Activate/deactivate/change the watched UID for watching a DHBW Mannheim Schedule for changes.
+    - It also fetches the current state as a base if activated/changed.
+    - It does not affect the rest of the config.
+- `python main.py --change-notification-mail`
+    - Activate/deactivate/change the settings for receiving notifications via e-mail.
+    - It does not affect the rest of the config.
+
 
 ### Notes
 - Use a separate E-Mail - Account for sending out the notifications, as its login data is saved in cleartext.
