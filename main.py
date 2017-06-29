@@ -122,7 +122,7 @@ def run_main():
         if changes.diff_count > 0:
             logging.info('%s changes found for the configured Dualis-Account.'%(changes.diff_count))
             token = dualis.get_token()
-            mail_service.notify_about_changes_in_results(changes, course_names, token)
+            mail_service.notify_about_changes_in_results(changes, course_names)
             dualis.save_state()
         else:
             logging.info('No changes found for the configured Dualis-Account.')

@@ -66,72 +66,72 @@ info_message_box = Template('''
     </table>
 ''')
 
-diff_dualis_added_box = Template('''
-    <div style="margin-top: 17px; margin-bottom: 7px; padding: 15px;">
-        <table style="width: 100%;">
-            <tbody><tr>
-                <td style="width: 17px; color: #7d878d; font-size: 17px; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
-                    +
-                </td>
-                <td style="width: auto; color: #7d878d; font-size: 20px; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
-                    ${course_name}
-                </td>
-                <td style="width: 170px; font-align: center">
+diff_dualis_main_box = Template('''
+    <table style="width: 100%;">
+        <thead style="heigth: 0"><tr>
+            <td style="width: 17px"/>
+            <td style="width: auto"/>
+        </tr></thead>
+        <tbody>
+            ${content}
+            
+            <tr style="height: 50px">
+                <td colspan="2">
                     <a style="border: 1px solid #e2001a; border-radius: 3px; padding: 3px; padding-left: 5px; padding-right: 7px; color: #e2001a; text-decoration: none !important;"
                         target="_blank"
-                        href="https://dualis.dhbw.de/scripts/mgrqcgi?APPNAME=CampusNet&PRGNAME=RESULTDETAILS&ARGUMENTS=-N${token},-N000307,-N${course_id}">
-                        <span style="text-decoration: none !important; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">komplett anzeigen »</span>
+                        href="https://dualis.dhbw.de/scripts/mgrqcgi?APPNAME=CampusNet&PRGNAME=EXTERNALPAGES&ARGUMENTS=-N000000000000001,-N000324,-Awelcome">
+                                <span style="text-decoration: none !important; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">Dualis öffnen »</span>
                     </a>
                 </td>
-            </tr></tbody>
-        </table>
-    </div>
+            </tr>
+        </tbody>
+    </table>
+''')
+
+diff_dualis_added_box = Template('''
+    <tr>
+        <td style="padding-bottom: 24px; color: #7d878d; font-size: 17px; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
+            +
+        </td>
+        <td style="padding-bottom: 24px; color: #7d878d; font-size: 20px; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
+            ${course_name}
+        </td>
+    </tr>
 ''')
 
 diff_dualis_deleted_box = Template('''
-    <div style="margin-top: 17px; margin-bottom: 7px; padding: 15px;">
-        <table style="width: 100%;">
-            <tbody><tr>
-                <td style="width: 17px; color: #7d878d; font-size: 17px; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
-                    ‒
-                </td>
-                <td style="width: auto; color: #7d878d; font-size: 20px; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
-                    ${course_name}
-                </td>
-                <td style="width: 170px; font-align: center">
-                </td>
-            </tr></tbody>
-        </table>
-    </div>
+    <tr>
+        <td style="padding-bottom: 24px; color: #7d878d; font-size: 17px; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
+            ‒
+        </td>
+        <td style="padding-bottom: 24px; color: #7d878d; font-size: 20px; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
+            ${course_name}
+        </td>
+    </tr>
 ''')
 
 diff_dualis_modified_box = Template('''
-    <div style="margin-top: 17px; margin-bottom: 7px; padding: 15px;">
-        <table style="width: 100%;">
-            <tbody><tr>
-                <td style="width: 17px; color: #7d878d; font-size: 17px; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
-                    ≠
-                </td>
-                <td style="width: auto; color: #7d878d; font-size: 20px; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
-                    ${course_name}
-                </td>
-                <td style="width: 170px; font-align: center">
-                    <a style="border: 1px solid #e2001a; border-radius: 3px; padding: 3px; padding-left: 5px; padding-right: 7px; color: #e2001a; text-decoration: none !important;"
-                        target="_blank"
-                        href="https://dualis.dhbw.de/scripts/mgrqcgi?APPNAME=CampusNet&PRGNAME=RESULTDETAILS&ARGUMENTS=-N${token},-N000307,-N${course_id}">
-                        <span style="text-decoration: none !important; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">komplett anzeigen »</span>
-                    </a>
-                </td>
-            </tr></tbody>
-        </table>
-        <table style="margin-top: 10px; background: #272822">
-            <tr>
-                <td>
-                    ${code_content}
-                </td>
-            </tr>
-        </table>
-    </div>
+    <tr>
+        <td style="color: #7d878d; font-size: 17px; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
+            ≠
+        </td>
+        <td style="color: #7d878d; font-size: 20px; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">
+            ${course_name}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="padding-bottom: 10px;">
+            <table>
+                <tbody>
+                    <tr>
+                        <td style="background: #272822">
+                            ${code_content}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
 ''')
 
 diff_schedule_modified_box = Template('''
@@ -148,7 +148,7 @@ diff_schedule_modified_box = Template('''
                 <a style="border: 1px solid #e2001a; border-radius: 3px; padding: 3px; padding-left: 5px; padding-right: 7px; color: #e2001a; text-decoration: none !important;"
                     target="_blank"
                     href="http://vorlesungsplan.dhbw-mannheim.de/index.php?action=view&gid=3067001&uid=${uid}">
-                    <span style="text-decoration: none !important; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">Kalendar anzeigen »</span>
+                    <span style="text-decoration: none !important; font-family: 'Segoe UI', 'Calibri', 'Lucida Grande', Arial, sans-serif;">Kalendar öffnen »</span>
                 </a>
             </td></tr>
         </table>
@@ -190,12 +190,12 @@ def _finish_with_main_wrapper(content: str, introduction: str) -> (str, {str : s
     return (full_content, cids_and_filenames)
 
 
-def create_full_dualis_diff_mail(changes: CollectionOfChanges, course_names: {str, str}, token: str) -> (str, {str : str}):
-    content = ''
+def create_full_dualis_diff_mail(changes: CollectionOfChanges, course_names: {str, str}) -> (str, {str : str}):
+    inner_diff_content = ''
 
     for added_element_id in changes.added:
-        content += diff_dualis_added_box.substitute(
-            course_id=added_element_id, course_name=course_names[added_element_id], token=token
+        inner_diff_content += diff_dualis_added_box.substitute(
+            course_id=added_element_id, course_name=course_names[added_element_id]
         )
 
     for deleted_element_id in changes.deleted:
@@ -203,7 +203,7 @@ def create_full_dualis_diff_mail(changes: CollectionOfChanges, course_names: {st
             BeautifulSoup(changes.deleted[deleted_element_id], 'html.parser')
         )
 
-        content += diff_dualis_deleted_box.substitute(
+        inner_diff_content += diff_dualis_deleted_box.substitute(
             course_id=deleted_element_id, course_name=deleted_name
         )
 
@@ -213,13 +213,21 @@ def create_full_dualis_diff_mail(changes: CollectionOfChanges, course_names: {st
         for fragment in inner_diffs_fragments:
             inner_diffs += _format_code(fragment)
 
-        content += diff_dualis_modified_box.substitute(
+        inner_diff_content += diff_dualis_modified_box.substitute(
             course_id=modified_element_id, course_name=course_names[modified_element_id],
-            code_content=inner_diffs, token=token
+            code_content=inner_diffs
         )
 
+    full_diff_content = diff_dualis_main_box.substitute(
+        content=inner_diff_content
+    )
+
+    count = changes.diff_count
+
     full_content = _finish_with_main_wrapper(
-        content, 'Es wurden Änderungen an %s Modulen festgestellt:'%(changes.diff_count)
+        full_diff_content,
+        'Es wurden Änderungen an %s Modulen festgestellt:'%(count) if count > 1 else\
+            'Am folgenden Modul würde Veränderung festgestellt:'
     )
 
     return full_content
@@ -236,7 +244,9 @@ def create_full_schedule_diff_mail(changes: [str], uid: str) -> (str, {str : str
     )
 
     full_content = _finish_with_main_wrapper(
-        content, 'Es wurden die folgenden %s Änderungen festgestellt:'%(len(changes))
+        content,
+        'Es wurden die folgenden %s Änderungen festgestellt:'%(len(changes)) if len(changes) > 1 else\
+            'Es wurde die folgende Änderung festgestellt:'
     )
 
     return full_content

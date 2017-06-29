@@ -56,12 +56,12 @@ class MailService(NotificationService):
 
                 self.config_helper.set_property('mail', mail_cfg)
 
-    def _send_mail(self, subject, mail_content: (str, {str : str})) -> bool:
+    def _send_mail(self, subject, mail_content: (str, {str : str})):
         try:
             mail_cfg = self.config_helper.get_property('mail')
         except ValueError:
             logging.debug('Mail-Notifications not configured, skipping.')
-            return False
+            pass  # ignore exception further up
 
         try:
             logging.debug('Sending Notification via Mail...')
@@ -74,13 +74,13 @@ class MailService(NotificationService):
                 mail_cfg['target'],
                 subject, mail_content[0], mail_content[1]
             )
-        except:
+        except BaseException as e:
             error_formatted = traceback.format_exc()
             logging.error('While sending notification:\n%s' % (error_formatted), extra={'exception': e})
-            pass  # ignore the exception further up
+            pass  # ignore exception further up
 
-    def notify_about_changes_in_results(self, changes: CollectionOfChanges, course_names: {str: str}, token: str) -> None:
-        mail_content = create_full_dualis_diff_mail(changes, course_names, token)
+    def notify_about_changes_in_results(self, changes: CollectionOfChanges, course_names: {str: str}) -> None:
+        mail_content = create_full_dualis_diff_mail(changes, course_names)
         self._send_mail('%s neue Änderungen in den Modul-Ergebnissen!'%(changes.diff_count), mail_content)
 
     def notify_about_changes_in_schedule(self, changes: [str], uid: str):

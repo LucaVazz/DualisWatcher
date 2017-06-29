@@ -22,7 +22,7 @@ class NotificationService:
         pass
 
     @abstractmethod
-    def notify_about_changes_in_results(self, changes: CollectionOfChanges, course_names: {str : str}, token: str) -> None:
+    def notify_about_changes_in_results(self, changes: CollectionOfChanges, course_names: {str : str}) -> None:
         """
         Sends out a Notification to inform about detected changes for the Dualis-Account.
         The caller shouldn't care about if the sending was successful.
