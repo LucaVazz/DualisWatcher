@@ -67,8 +67,8 @@ class DualisService:
 
     def fetch_and_save_unchecked_state(self) -> None:
         """
-        Fetches the current Result-State of the configured Dualis-Account and directly saves it, without 
-         checking for changes. 
+        Fetches the current Result-State of the configured Dualis-Account and directly saves it,  
+         without checking for changes. 
         """
         results = self._fetch_state()[0]
 
@@ -79,8 +79,8 @@ class DualisService:
 
     def fetch_and_check_state(self) -> (CollectionOfChanges, {str : str}):
         """
-        Fetches the current Result-State of the configured Dualis-Account and comperes it with the last known
-         state for changes.
+        Fetches the current Result-State of the configured Dualis-Account and comperes it with the 
+         last known state for changes.
         @return: Tuple with (detected changes, course names)
         """
         logging.debug('Fetching current Dualis State...')
