@@ -1,6 +1,13 @@
 import os
 import subprocess
 
+class CollectionOfChanges:
+    def __init__(self, count: int, added: [str], deleted: {str : str}, modified: {str : [str]}):
+        self.diff_count = count
+        self.added = added
+        self.deleted = deleted
+        self.modified = modified
+
 
 class VersionRecorder:
     """
@@ -129,11 +136,3 @@ class VersionRecorder:
             raise RuntimeError(error_message)
 
         return result.stdout.decode('utf-8', 'backslashreplace')
-
-
-class CollectionOfChanges:
-    def __init__(self, count: int, added: [str], deleted: {str : str}, modified: {str : [str]}):
-        self.diff_count = count
-        self.added = added
-        self.deleted = deleted
-        self.modified = modified
