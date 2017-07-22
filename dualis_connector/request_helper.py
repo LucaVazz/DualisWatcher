@@ -14,10 +14,10 @@ class RequestHelper:
         self.token = token
         self.stdHeader = {
             'Cookie': 'cnsc=0',
-            # the Dualis System assumes by the presence of this field that we are ready to handle
+            # The Dualis System assumes by the presence of this field that we are ready to handle
             #   and store cookies
-            # Yeah, right... We definitively do that...
-            # (No, we don't have to. Chrome is also sending cnsc=0 everytime and it works fine)
+            #  Yeah, right... We definitively do that...
+            #  (No, we don't have to. Chrome is also sending cnsc=0 everytime and it works fine)
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
             # copied straight out of Chrome
         }
@@ -75,8 +75,7 @@ class RequestHelper:
 
         response_soup = BeautifulSoup(response.read(), 'html.parser')
 
-        if (    response_soup.title is not None  # because Dualis sometimes really doesn't care
-                                                 #  about anything
+        if (    response_soup.title is not None
             and response_soup.title.string == 'Execution Error'
         ):
             if (response_soup.find('font', string=re.compile(r'.*(-131).*')) is not None):
@@ -85,9 +84,11 @@ class RequestHelper:
                 raise RuntimeError('An Unexpected Error happened on side of the Dualis System!')
 
         if (response_soup.find('form', id='cn_loginForm') is not None):
-            # if an error with the token or the login itself occurs, we get thrown back to the login page
-            #  (in other error-cases we just get a page with nonsensical data back, which is not easily distinguishable
-            #  from a valid response)
+            # If an error with the token or the login itself occurs, we get thrown back to the login
+            #  page with an additional error message.
+            # (In other error-cases we just get a page with nonsensical data back, which is
+            #  not easily distinguishable from a valid response and not indicated as an error in any
+            #  way...)
             response_maincontent = response_soup.body.find('div', id='pageContent')
 
             error_title = response_maincontent.find('h1')
