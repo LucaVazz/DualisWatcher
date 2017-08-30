@@ -1,5 +1,8 @@
+# coding=utf-8
+
 from email.utils import make_msgid
 from string import Template
+import re
 
 from bs4 import BeautifulSoup
 from pygments import highlight
@@ -190,6 +193,9 @@ def _finish_with_main_wrapper(content: str, introduction: str) -> (str, {str : s
     return (full_content, cids_and_filenames)
 
 
+def _redact_grades(content):
+    return re.sub(r'\d{1,3},\d{1,2}', '<span style="background-color:#404040; color:#404040;">???</span>', content)
+
 def create_full_dualis_diff_mail(changes: CollectionOfChanges, course_names: {str, str}) -> (str, {str : str}):
     inner_diff_content = ''
 
@@ -218,6 +224,8 @@ def create_full_dualis_diff_mail(changes: CollectionOfChanges, course_names: {st
             code_content=inner_diffs
         )
 
+    inner_diff_content = _redact_grades(inner_diff_content)
+
     full_diff_content = diff_dualis_main_box.substitute(
         content=inner_diff_content
     )
@@ -232,12 +240,27 @@ def create_full_dualis_diff_mail(changes: CollectionOfChanges, course_names: {st
 
     return full_content
 
+def _format_special_ical(code):
+    code = code.replace('UID:',      '<b>UID:      </b>', )
+    code = code.replace('LOCATION:', '<b>LOCATION: </b>', )
+    code = code.replace('SUMMARY:',  '<b>SUMMARY:  </b>', )
+    code = code.replace('DTSTART:',  '<b>DTSTART:  </b>', )
+    code = code.replace('DTEND:',    '<b>DTEND:    </b>', )
+    code = code.replace('DTSTAMP:',  '<b>DTSTAMP:  </b>', )
+
+    code = re.sub(r'(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})\n', r'\3.\2.\1 \4:\5\n', code)
+
+    code = code.replace('@', ' @ ')
+
+    return code
+
 def create_full_schedule_diff_mail(changes: [str], uid: str) -> (str, {str : str}):
     content = ''
 
     inner_diffs = ''
     for fragment in changes:
-        inner_diffs += _format_code(fragment)
+        fragment = fragment.replace('END:VEVENT\nBEGIN:VEVENT', 'END:VEVENT\n\nBEGIN:VEVENT')
+        inner_diffs += _format_special_ical(_format_code(fragment))
 
     content += diff_schedule_modified_box.substitute(
         code_content=inner_diffs, uid=uid
