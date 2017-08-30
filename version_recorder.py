@@ -97,8 +97,11 @@ class VersionRecorder:
                     diffs = diffs[1:]  # because we don't need the preface
                     formatted_diffs = []
                     for diff in diffs:
-                        diff_lines = diff.split('\r\n')
+                        diff = diff.replace('\r\n', '\n')
+                        diff_lines = diff.split('\n')
+                        diff_lines[0] = '[...]\n'
                         formatted_diffs.append('\n'.join(diff_lines))
+                    formatted_diffs.append('\n[...]')
                     modified.update( {file_name : formatted_diffs} )
                 else:
                     raise RuntimeError(
