@@ -9,6 +9,7 @@ import traceback
 from config_helper import ConfigHelper
 from dhbw_ma_schedule_connector.schedule_service import ScheduleService
 from dualis_connector.dualis_service import DualisService
+from dualis_connector.request_helper import DualisSleepingError
 from notification_services.mail.mail_service import MailService
 
 
@@ -121,7 +122,6 @@ def run_main():
 
         if changes.diff_count > 0:
             logging.info('%s changes found for the configured Dualis-Account.'%(changes.diff_count))
-            token = dualis.get_token()
             mail_service.notify_about_changes_in_results(changes, course_names)
             dualis.save_state()
         else:
@@ -139,6 +139,9 @@ def run_main():
                 logging.info('No changes found for the configured Schedule.')
 
         logging.debug('All done. Exiting...')
+    except DualisSleepingError:
+        logging.info('Dualis is sleeping, exiting and soon trying again.')
+        sys.exit(-1)
     except BaseException as e:
         error_formatted = traceback.format_exc()
         logging.error(error_formatted, extra={'exception':e})

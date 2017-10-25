@@ -78,10 +78,13 @@ class RequestHelper:
         if (    response_soup.title is not None
             and response_soup.title.string == 'Execution Error'
         ):
-            if (response_soup.find('font', string=re.compile(r'.*(-131).*')) is not None):
+            error = response_soup.find('h3').find('div').innerText
+            if ('Program not found' in error):
                 raise ValueError('The requested program could not be found by the Dualis System!')
+            elif ('Aborting context' in error):
+                raise DualisSleepingError('Request Context was aborted.')
             else:
-                raise RuntimeError('An Unexpected Error happened on side of the Dualis System!')
+                raise RuntimeError('An Unexpected Error happened on side of the Dualis System! Details: %s'%(error))
 
         if (response_soup.find('form', id='cn_loginForm') is not None):
             # If an error with the token or the login itself occurs, we get thrown back to the login
@@ -113,4 +116,8 @@ class RequestHelper:
 
 class RequestRejectedError(Exception):
     """An Exception which gets thrown if the Dualis-System answered with an Error to our Request"""
+    pass
+
+class DualisSleepingError(Exception):
+    """An Exception used for aborting when Dualis is sleeping again at night"""
     pass
