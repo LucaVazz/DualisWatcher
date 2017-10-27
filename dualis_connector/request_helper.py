@@ -78,7 +78,7 @@ class RequestHelper:
         if (    response_soup.title is not None
             and response_soup.title.string == 'Execution Error'
         ):
-            error = response_soup.find('h3').find('div').innerText
+            error = response_soup.findAll('h3')[-1].find('div').string
             if ('Program not found' in error):
                 raise ValueError('The requested program could not be found by the Dualis System!')
             elif ('Aborting context' in error):
