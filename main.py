@@ -132,7 +132,7 @@ def run_main():
             logging.debug('Checking for changes for the configured Schedule...')
             changes = schedule.fetch_and_check_state()
             if len(changes) > 0:
-                logging.info('%s changes found for the configured Schedule.'%(len(changes)))
+                logging.info('%s changes found for the configured Schedule.' % (len(changes) - 1) )
                 mail_service.notify_about_changes_in_schedule(changes, schedule.uid)
                 schedule.save_state()
             else:

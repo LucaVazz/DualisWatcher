@@ -85,7 +85,7 @@ class MailService(NotificationService):
 
     def notify_about_changes_in_schedule(self, changes: [str], uid: str):
         mail_content = create_full_schedule_diff_mail(changes, uid)
-        self._send_mail('%s neue Änderungen im Vorlesungsplan!'%(len(changes)), mail_content)
+        self._send_mail('%s neue Änderungen im Vorlesungsplan!' % (len(changes) - 1), mail_content)
 
     def notify_about_error(self, error_description: str):
         mail_content = create_full_error_mail(error_description)

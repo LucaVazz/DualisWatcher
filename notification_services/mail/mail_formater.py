@@ -241,16 +241,21 @@ def create_full_dualis_diff_mail(changes: CollectionOfChanges, course_names: {st
     return full_content
 
 def _format_special_ical(code):
+    # Make Timestamps a bit more readable:
+    # i.e.: 20170402T1337   ->   02.04.2017 13:37
+    #       \1  \2\3 \4\5        \3 \2 \1   \4 \5
     code = re.sub(r':(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})', r':\3.\2.\1 \4:\5', code)
 
-    code = code.replace('UID:',      '<b>UID: </b>', )
-    code = code.replace('LOCATION:', '<b>LOCATION: </b>', )
-    code = code.replace('SUMMARY:',  '<b>SUMMARY: </b>', )
-    code = code.replace('DTSTART:',  '<b>DTSTART: </b>', )
-    code = code.replace('DTEND:',    '<b>DTEND: </b>', )
-    code = code.replace('DTSTAMP:',  '<b>DTSTAMP: </b>', )
-
-    code = code.replace('@', ' @ ')
+    # Increase readability further with more spacing:
+    code = code\
+            .replace('UID:',      '<b>UID: </b>', )\
+            .replace('LOCATION:', '<b>LOCATION: </b>', )\
+            .replace('SUMMARY:',  '<b>SUMMARY: </b>', )\
+            .replace('DTSTART:',  '<b>DTSTART: </b>', )\
+            .replace('DTEND:',    '<b>DTEND: </b>', )\
+            .replace('DTSTAMP:',  '<b>DTSTAMP: </b>', )\
+            .replace('@', ' @ ')\
+            .replace('BEGIN:VEVENT', '\nBEGIN:VEVENT')
 
     return code
 
@@ -259,7 +264,6 @@ def create_full_schedule_diff_mail(changes: [str], uid: str) -> (str, {str : str
 
     inner_diffs = ''
     for fragment in changes:
-        fragment = fragment.replace('END:VEVENT\nBEGIN:VEVENT', 'END:VEVENT\n\nBEGIN:VEVENT')
         inner_diffs += _format_special_ical(_format_code(fragment))
 
     content += diff_schedule_modified_box.substitute(
@@ -268,7 +272,7 @@ def create_full_schedule_diff_mail(changes: [str], uid: str) -> (str, {str : str
 
     full_content = _finish_with_main_wrapper(
         content,
-        'Es wurden die folgenden %s Änderungen festgestellt:'%(len(changes)) if len(changes) > 1 else\
+        'Es wurden die folgenden %s Änderungen festgestellt:' % (len(changes) - 1) if len(changes) > 1 else\
             'Es wurde die folgende Änderung festgestellt:'
     )
 
