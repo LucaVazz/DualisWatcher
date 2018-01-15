@@ -6,6 +6,9 @@ import os
 import sys
 import traceback
 
+from raven import fetch_git_sha
+from raven.base import Raven
+
 from config_helper import ConfigHelper
 from dhbw_ma_schedule_connector.schedule_service import ScheduleService
 from dualis_connector.dualis_service import DualisService
@@ -36,6 +39,13 @@ def run_init():
             sys.exit(0)
 
     MailService(config).interactively_configure()
+
+    raw_do_sentry = ''
+    while raw_do_sentry not in ['y', 'n']:
+        raw_do_sentry = input('Do you want to configure Error Reporting via Sentry? [y/n]')
+    if raw_do_sentry == 'y':
+        sentry_dsn = input('Please enter your Sentry DSN:   ')
+        config.set_property('sentry_dsn', sentry_dsn)
 
     dualis = DualisService(config)
     dualis.interactively_acquire_token()
@@ -110,6 +120,18 @@ def run_main():
         logging.error('Error while trying to load the Configuration! Exiting...', extra={'exception':e})
         sys.exit(-1)
 
+    r_client = None
+    try:
+        sentry_dsn = config.get_property('sentry_dsn')
+        if sentry_dsn:
+            r_client = Raven(
+                sentry_dsn,
+                auto_log_stacks=True,
+                release=fetch_git_sha(os.path.dirname(__file__))
+            )
+    except BaseException:
+        pass
+
     mail_service = MailService(config)
 
     try:
@@ -145,7 +167,12 @@ def run_main():
     except BaseException as e:
         error_formatted = traceback.format_exc()
         logging.error(error_formatted, extra={'exception':e})
+
+        if r_client:
+            r_client.captureException(exec_info=True)
+
         mail_service.notify_about_error(str(e))
+
         logging.debug('Exception-Handling completed. Exiting...', extra={'exception' : e})
         sys.exit(-1)
 

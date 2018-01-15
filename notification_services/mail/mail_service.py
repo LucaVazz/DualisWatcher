@@ -45,13 +45,20 @@ class MailService(NotificationService):
                     )
                     config_valid = True
 
+                raw_send_error_msg = ''
+                while raw_send_error_msg not in ['y', 'n']:
+                    raw_send_error_msg = input('Do you want to also get error reports sent by mail? [y/n]   ')
+                do_send_error_msg = raw_send_error_msg == 'y'
+
+
                 mail_cfg = {
                     'sender': sender,
                     'server_host': server_host,
                     'server_port': server_port,
                     'username': username,
                     'password': password,
-                    'target': target
+                    'target': target,
+                    'send_error_msg': do_send_error_msg
                 }
 
                 self.config_helper.set_property('mail', mail_cfg)
@@ -88,5 +95,8 @@ class MailService(NotificationService):
         self._send_mail('%s neue Änderungen im Vorlesungsplan!' % (len(changes) - 1), mail_content)
 
     def notify_about_error(self, error_description: str):
+        if not self.config_helper.get_property('mail').get('send_error_msg', True):
+            return
+
         mail_content = create_full_error_mail(error_description)
         self._send_mail('Fehler!', mail_content)
