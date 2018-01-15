@@ -7,7 +7,7 @@ import sys
 import traceback
 
 from raven import fetch_git_sha
-from raven.base import Raven
+from raven.handlers.logging import Client as RavenClient
 
 from config_helper import ConfigHelper
 from dhbw_ma_schedule_connector.schedule_service import ScheduleService
@@ -124,7 +124,7 @@ def run_main():
     try:
         sentry_dsn = config.get_property('sentry_dsn')
         if sentry_dsn:
-            r_client = Raven(
+            r_client = RavenClient(
                 sentry_dsn,
                 auto_log_stacks=True,
                 release=fetch_git_sha(os.path.dirname(__file__))
