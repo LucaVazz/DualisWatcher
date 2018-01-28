@@ -1,5 +1,5 @@
 import logging
-from http.client import HTTPConnection
+from http.client import HTTPSConnection
 
 from config_helper import ConfigHelper
 from version_recorder import VersionRecorder
@@ -35,7 +35,7 @@ class ScheduleService:
             self.config_helper.remove_property('schedule')
         else:
             print(
-                  'Go to `http://vorlesungsplan.dhbw-mannheim.de/ical.php` and select your course.'
+                  'Go to `https://vorlesungsplan.dhbw-mannheim.de/ical.php` and select your course.'
                 + '\nYou will be presented with a link ending in `?uid=`, what follows after that is the UID.'
             )
             is_config_valid = False
@@ -62,7 +62,7 @@ class ScheduleService:
         return self.is_activated
 
     def _fetch_state(self, uid) -> str:
-        connection = HTTPConnection('vorlesungsplan.dhbw-mannheim.de')
+        connection = HTTPSConnection('vorlesungsplan.dhbw-mannheim.de')
         connection.request(
             'GET',
             '/ical.php?uid=%s'%(uid)
