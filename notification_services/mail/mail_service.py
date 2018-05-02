@@ -84,7 +84,6 @@ class MailService(NotificationService):
         except BaseException as e:
             error_formatted = traceback.format_exc()
             logging.error('While sending notification:\n%s' % (error_formatted), extra={'exception': e})
-            pass  # ignore exception further up
 
     def notify_about_changes_in_results(self, changes: CollectionOfChanges, course_names: {str: str}) -> None:
         mail_content = create_full_dualis_diff_mail(changes, course_names)
