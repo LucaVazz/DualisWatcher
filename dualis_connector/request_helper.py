@@ -18,7 +18,7 @@ class RequestHelper:
             #   and store cookies
             #  Yeah, right... We definitively do that...
             #  (No, we don't have to. Chrome is also sending cnsc=0 everytime and it works fine)
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
             # copied straight out of Chrome
         }
 
