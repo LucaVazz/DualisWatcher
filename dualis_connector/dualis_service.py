@@ -25,18 +25,20 @@ class DualisService:
         print('[The following Input is not saved, it is only used temporarily to generate a login token.]')
 
         token = None
+        cnsc = None
         while token is None:
             dualis_username = input('Username for Dualis:   ')
             dualis_password = getpass('Password for Dualis [no output]:   ')
             try:
-                token = login_helper.obtain_login_token(dualis_username, dualis_password)
+                token, cnsc = login_helper.obtain_login_token(dualis_username, dualis_password)
             except RequestRejectedError as error:
                 print('Login Failed! (%s) Please try again.' % (error))
             except (ValueError, RuntimeError) as error:
                 print('Error while communicating with the Dualis System! (%s) Please try again.' % (error))
 
         self.config_helper.set_property('token', token)
-
+        self.config_helper.set_property('cnsc', cnsc)
+        
         return token
 
     def _fetch_state(self) -> ({ str : BeautifulSoup}, {str : str}):
@@ -45,8 +47,9 @@ class DualisService:
         @return: Tuple with (result data , course names)
         """
         token = self.get_token()
+        cnsc = self.get_cnsc()
 
-        request_helper = RequestHelper(token)
+        request_helper = RequestHelper(token, cnsc)
         list_handler = ResultsHandler(request_helper)
 
         courses = []
@@ -108,9 +111,15 @@ class DualisService:
         logging.debug('Saving new, current state as new version...')
         self.recorder.persist_new_version()
         self.is_state_floating = False
-
+   
     def get_token(self) -> str:
         try:
             return self.config_helper.get_property('token')
+        except ValueError:
+            raise ValueError('Not yet configured!')
+   
+    def get_cnsc(self) -> str:
+        try:
+            return self.config_helper.get_property('cnsc')
         except ValueError:
             raise ValueError('Not yet configured!')

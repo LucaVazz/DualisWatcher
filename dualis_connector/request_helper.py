@@ -9,16 +9,16 @@ class RequestHelper:
     """
     Encapsulates the recurring logic for sending out requests to the Dualis-System.
     """
-    def __init__(self, token = ''):
+    def __init__(self, token = '', cnsc = '0'):
         self.connection = HTTPSConnection('dualis.dhbw.de')
         self.token = token
         self.stdHeader = {
-            'Cookie': 'cnsc=0',
+            'Cookie': 'cnsc=' + cnsc,
             # The Dualis System assumes by the presence of this field that we are ready to handle
             #   and store cookies
             #  Yeah, right... We definitively do that...
             #  (No, we don't have to. Chrome is also sending cnsc=0 everytime and it works fine)
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0'
             # copied straight out of Chrome
         }
 
@@ -44,7 +44,7 @@ class RequestHelper:
             ),
             headers=self.stdHeader
         )
-
+        
         response = self.connection.getresponse()
         return self._initial_parse(response)
 
