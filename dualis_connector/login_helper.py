@@ -32,5 +32,7 @@ def obtain_login_token(username, password) -> str:
 
     # the token is the first argument, without the prefix '-N'
     token = arguments[0][len('-N'):]
+    
+    cnsc = response.getheader("Set-cookie").split('=')[1]
 
-    return token
+    return token, cnsc
