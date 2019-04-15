@@ -25,7 +25,7 @@ def obtain_login_token(username, password) -> str:
         raise RuntimeError('Invalid response received from the Dualis System!')
 
     # refresh_instruction is now something like
-    #  0; URL=/scripts/mgrqcgi?APPNAME=CampusNet&PRGNAME=STARTPAGE_DISPATCH&ARGUMENTS=-N128917080975804,-N000019,-N000000000000000
+    #  0; URL=/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=STARTPAGE_DISPATCH&ARGUMENTS=-N128917080975804,-N000019,-N000000000000000
     # ->                                                                                |<-- token -->|
     arguments_raw = refresh_instruction.split('ARGUMENTS=').pop()
     arguments = arguments_raw.split(',')
