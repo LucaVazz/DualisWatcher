@@ -20,7 +20,7 @@ This document is very hacky and the contained assumptions are prone to break at 
 
 
 ### POSTing the Login
-**Endpoint**: `/mgrqcgi`
+**Endpoint**: `/mgrqispi.dll`
 
 **Request-Payload:** URL-Encoded Form with:
 - `usrname`
@@ -29,23 +29,23 @@ This document is very hacky and the contained assumptions are prone to break at 
 - `APPNAME`: `CampusNet`
 - `PRGNAME`: `LOGINCHECK`
 
-**Response:** HTTP-Status Code 200, page with empty body and the relevant Header field *REFRESH*: `0; URL=/scripts/mgrqcgi?APPNAME=CampusNet&PRGNAME=STARTPAGE_DISPATCH&ARGUMENTS=-N<token>,-N000019,-N000000000000000`
+**Response:** HTTP-Status Code 200, page with empty body and the relevant Header field *REFRESH*: `0; URL=/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=STARTPAGE_DISPATCH&ARGUMENTS=-N<token>,-N000019,-N000000000000000`
 
 
 ### GETting the List of Result-Lists
-**Endpoint:** `/mgrqcgi?APPNAME=CampusNet&PRGNAME=COURSERESULTS&ARGUMENTS=-N<token>,-N000307,`
+**Endpoint:** `/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=COURSERESULTS&ARGUMENTS=-N<token>,-N000307,`
 
 **Response**: page with a `<select id="semester">` containing several options like `<option value="<semesterId>" ><courseName></option>`
 
 
 ### GETting One Result-List
-**Endpoint:** `/mgrqcgi?APPNAME=CampusNet&PRGNAME=COURSERESULTS&ARGUMENTS=-N<token>,-N000307,-N<semesterId>`
+**Endpoint:** `/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=COURSERESULTS&ARGUMENTS=-N<token>,-N000307,-N<semesterId>`
 
-**Response:** page with a `<table class="nb list">` containing several links like `<a id="Popup_details0001" href="/scripts/mgrqcgi?APPNAME=CampusNet&amp;PRGNAME=RESULTDETAILS&amp;ARGUMENTS=-<token>,-N000307,-N<courseId>,-N000000015024000">Prüfungen</a>`
+**Response:** page with a `<table class="nb list">` containing several links like `<a id="Popup_details0001" href="/scripts/mgrqispi.dll?APPNAME=CampusNet&amp;PRGNAME=RESULTDETAILS&amp;ARGUMENTS=-<token>,-N000307,-N<courseId>,-N000000015024000">Prüfungen</a>`
 
 
 ### GETting One Course-Result
-**Endpoint**: `/mgrqcgi?APPNAME=CampusNet&PRGNAME=RESULTDETAILS&ARGUMENTS=-N<token>,-N000307,-N<courseId>`
+**Endpoint**: `/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=RESULTDETAILS&ARGUMENTS=-N<token>,-N000307,-N<courseId>`
 
 **Response**: page with the following:
 - a `<h1>` containing the full course title

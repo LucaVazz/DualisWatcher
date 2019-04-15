@@ -39,7 +39,7 @@ class RequestHelper:
 
         self.connection.request(
             'GET',
-            '/scripts/mgrqcgi?APPNAME=CampusNet&PRGNAME=%s&ARGUMENTS=-N%s,-N000019,%s'%(
+            '/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=%s&ARGUMENTS=-N%s,-N000019,%s'%(
                 programName, self.token, id_segment
             ),
             headers=self.stdHeader
@@ -51,7 +51,7 @@ class RequestHelper:
     def post_raw(self, relative_url: str, data: object) -> (BeautifulSoup, HTTPResponse):
         """
         Sends data via POST to the Dualis System
-        @param relativeUrl: the Endpoint-Url to which the data should be send, relative to /scripts/mgrqcgi
+        @param relativeUrl: the Endpoint-Url to which the data should be send, relative to /scripts/mgrqispi.dll
         @param data: a plain object representing the data to post
         @return: the response returned by the Dualis System, already checked for errors
         """
@@ -59,7 +59,7 @@ class RequestHelper:
 
         self.connection.request(
             'POST',
-            '/scripts/mgrqcgi%s'%(
+            '/scripts/mgrqispi.dll%s'%(
                 relative_url
             ),
             body=data_urlencoded,
