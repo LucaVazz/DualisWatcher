@@ -17,7 +17,7 @@ class DualisService:
 
         self.is_state_floating = False
 
-    def interactively_acquire_token(self) -> str:
+    def acquire_token(self, dualis_username='', dualis_password='') -> str:
         """
         Walks the user through executing a login into the Dualis-System to get the Token and saves it.
         @return: The Token for Dualis.
@@ -27,8 +27,9 @@ class DualisService:
         token = None
         cnsc = None
         while token is None:
-            dualis_username = input('Username for Dualis:   ')
-            dualis_password = getpass('Password for Dualis [no output]:   ')
+            if not dualis_username or not dualis_password:
+                dualis_username = input('Username for Dualis:   ')
+                dualis_password = getpass('Password for Dualis [no output]:   ')
             try:
                 token, cnsc = login_helper.obtain_login_token(dualis_username, dualis_password)
             except RequestRejectedError as error:
