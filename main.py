@@ -49,7 +49,7 @@ def run_init():
         config.set_property('sentry_dsn', sentry_dsn)
 
     dualis = DualisService(config)
-    dualis.acquire_token()
+    dualis.interactively_acquire_token()
 
     schedule = ScheduleService(config)
     is_schedule_activated = schedule.interactively_configure()
@@ -76,7 +76,7 @@ def run_new_token(email='', password=''):
     config.load()  # because we do not want to override the other settings
 
     if(not email or not password):
-        DualisService(config).acquire_token()
+        DualisService(config).interactively_acquire_token()
     else:
         DualisService(config).acquire_token(email, password)
 
@@ -210,7 +210,7 @@ elif len(sys.argv) == 4 and sys.argv[1] == '--new-token' and sys.argv[2] == '--f
         if email_value and password_value:
             run_new_token(email_value, password_value)
         else:
-            run_new_token()       
+            sys.exit('Either email or password is missing, aborting')      
 elif len(sys.argv) == 6 and sys.argv[1] == '--new-token':
     email_value = ''
     password_value = ''
@@ -223,7 +223,7 @@ elif len(sys.argv) == 6 and sys.argv[1] == '--new-token':
     if email_value and password_value:
         run_new_token(email_value, password_value)
     else:
-        run_new_token()
+        sys.exit('Either email or password is missing, aborting')
                 
 else:
     print(

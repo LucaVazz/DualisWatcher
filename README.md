@@ -41,21 +41,20 @@
     - It does not affect the rest of the config.
     - It prints all information into the console.
 - `python main.py --new-token --email wi@dhbw.de --password 1234`
-    - Overrides the login-token with a newly obtained one. With the specified credentials
+    - Overrides the login-token with a newly obtained one, using the specified credentials
     - It does not fetch the current state of your Dualis-Account.
     - Use it if at any point in time, for whatever reason, the saved token gets rejected by Dualis.
     - It does not affect the rest of the config.
     - It prints all information into the console.
     - Be aware, that both your password and the email will be _*exposed*_ in the system logs and in the crontab if you use this. Only use in trusted environments.
 - `python main.py --new-token --file credentials.json`
-    - Overrides the login-token with a newly obtained one. With the specified credentials
+    - Overrides the login-token with a newly obtained one, using the specified credentials
     - It does not fetch the current state of your Dualis-Account.
     - Use it if at any point in time, for whatever reason, the saved token gets rejected by Dualis.
     - It does not affect the rest of the config.
     - It prints all information into the console.
-    - Loads creds from specified file
     - Be aware, that both your password and the email will be _*exposed*_ in the file you are loading.
-    - specify the credentials as follows in the file:
+    - Specify the credentials as follows in the file:
     -   ```json
         {
             "email": "wi@dhbw.de",
@@ -78,7 +77,9 @@
 - Use a separate E-Mail - Account for sending out the notifications, as its login data is saved in cleartext.
 - The Login-Information for your Dualis-Account is secure, it isn't saved in any way. Only a Login-Token is saved.
 - Use the following crontab schedule to reduce the load on Dualis (polls every hour on working days, but requires you to hardcode the token, as the session will be expired every time):
-    - ```0 8-18 * * 1-5 cd DualisWatcher && source env/bin/activate && python3 main.py --new-token --email wi@dhbw.de --password test123 && python3 main.py```
+    - ```shell
+      0 8-18 * * 1-5 cd DualisWatcher && source env/bin/activate && python3 main.py --new-token --email wi@dhbw.de --password test123 && python3 main.py
+      ```
 
 
 ---
