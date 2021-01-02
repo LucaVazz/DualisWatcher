@@ -19,16 +19,23 @@ class DualisService:
         self.is_state_floating = False
 
     def interactively_acquire_token(self) -> str:
-        dualis_username = input('Username for Dualis:   ')
-        dualis_password = getpass('Password for Dualis [no output]:   ')
-        return self.acquire_token(dualis_username, dualis_password)
-
-    def acquire_token(self, dualis_username, dualis_password) -> str:
         """
         Walks the user through executing a login into the Dualis-System to get the Token and saves it.
         @return: The Token for Dualis.
         """
+        
         print('[The following Input is not saved, it is only used temporarily to generate a login token.]')
+
+        dualis_username = input('Username for Dualis:   ')
+        dualis_password = getpass('Password for Dualis [no output]:   ')
+
+        return self.acquire_token(dualis_username, dualis_password)
+
+    def acquire_token(self, dualis_username, dualis_password) -> str:
+        """
+        Autonomously fetches a Dualis token via inputs supplied at invoke time.
+        @return: The Token for Dualis.
+        """
 
         token = None
         cnsc = None
