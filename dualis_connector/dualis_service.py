@@ -1,4 +1,5 @@
 import logging
+import sys
 from getpass import getpass
 
 from bs4 import BeautifulSoup
@@ -22,13 +23,25 @@ class DualisService:
         Walks the user through executing a login into the Dualis-System to get the Token and saves it.
         @return: The Token for Dualis.
         """
+        
         print('[The following Input is not saved, it is only used temporarily to generate a login token.]')
+
+        dualis_username = input('Username for Dualis:   ')
+        dualis_password = getpass('Password for Dualis [no output]:   ')
+
+        return self.acquire_token(dualis_username, dualis_password)
+
+    def acquire_token(self, dualis_username, dualis_password) -> str:
+        """
+        Autonomously fetches a Dualis token via inputs supplied at invoke time.
+        @return: The Token for Dualis.
+        """
 
         token = None
         cnsc = None
         while token is None:
-            dualis_username = input('Username for Dualis:   ')
-            dualis_password = getpass('Password for Dualis [no output]:   ')
+            if not dualis_username or not dualis_password:
+                sys.exit('Credentials not specified correctly, aborting, ...')
             try:
                 token, cnsc = login_helper.obtain_login_token(dualis_username, dualis_password)
             except RequestRejectedError as error:

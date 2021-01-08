@@ -5,6 +5,7 @@ import logging
 import os
 import sys
 import traceback
+import json
 
 from raven import fetch_git_sha
 from raven.handlers.logging import Client as RavenClient
@@ -70,11 +71,14 @@ def run_init():
 
     print('All set and ready to go!')
 
-def run_new_token():
+def run_new_token(email='', password=''):
     config = ConfigHelper()
     config.load()  # because we do not want to override the other settings
 
-    DualisService(config).interactively_acquire_token()
+    if(not email or not password):
+        DualisService(config).interactively_acquire_token()
+    else:
+        DualisService(config).acquire_token(email, password)
 
     print('New Token successfully saved!')
 
@@ -196,6 +200,31 @@ if len(sys.argv) == 2:
 elif len(sys.argv) == 1:
     # the name of the executed file always gets passed
     run_main()
+
+elif len(sys.argv) == 4 and sys.argv[1] == '--new-token' and sys.argv[2] == '--file' and sys.argv[3]:
+    with open(sys.argv[3]) as json_file:
+        file_result = json.load(json_file)
+        email_value = file_result['email']
+        password_value = file_result['password']
+    
+        if email_value and password_value:
+            run_new_token(email_value, password_value)
+        else:
+            sys.exit('Either email or password is missing, aborting')      
+elif len(sys.argv) == 6 and sys.argv[1] == '--new-token':
+    email_value = ''
+    password_value = ''
+    for index,arg in enumerate(sys.argv):
+        if arg == '--email':
+            email_value = sys.argv[index+1]
+        elif arg == '--password':
+            password_value = sys.argv[index+1]
+    
+    if email_value and password_value:
+        run_new_token(email_value, password_value)
+    else:
+        sys.exit('Either email or password is missing, aborting')
+                
 else:
     print(
           'Unrecognized argument or combination of arguments passed!'
@@ -203,3 +232,4 @@ else:
         + '`--change-notification-mail`'
     )
     sys.exit(-1)
+
