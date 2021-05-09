@@ -39,15 +39,28 @@ class DualisService:
 
         token = None
         cnsc = None
-        while token is None:
+        retries = 0
+        while token is None and retries < 5:
+            retries += 1
             if not dualis_username or not dualis_password:
-                sys.exit('Credentials not specified correctly, aborting, ...')
+                msg = 'Credentials not specified correctly, aborting, ...'
+                logging.debug(msg)
+                sys.exit(msg)
             try:
                 token, cnsc = login_helper.obtain_login_token(dualis_username, dualis_password)
             except RequestRejectedError as error:
-                print('Login Failed! (%s) Please try again.' % (error))
+                msg = 'Login Failed! (%s) Please try again.' % (error)
+                logging.debug(msg)
+                print(msg)
             except (ValueError, RuntimeError) as error:
-                print('Error while communicating with the Dualis System! (%s) Please try again.' % (error))
+                msg = 'Error while communicating with the Dualis System! (%s) Please try again.' % (error)
+                logging.debug(msg)
+                print(msg)
+        if token is None and retries >= 5:
+            msg = "Error: maximum retries reached, aborting..."
+            print(msg)
+            logging.debug(msg)
+            raise Exception(msg)
 
         self.config_helper.set_property('token', token)
         self.config_helper.set_property('cnsc', cnsc)

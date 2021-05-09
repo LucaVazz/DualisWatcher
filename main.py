@@ -75,6 +75,13 @@ def run_new_token(email='', password=''):
     config = ConfigHelper()
     config.load()  # because we do not want to override the other settings
 
+    logging.basicConfig(
+        filename='DualisWatcher.log', level=logging.DEBUG,
+        format='%(asctime)s  %(levelname)s  {%(module)s}  %(message)s', datefmt='%Y-%m-%d %H:%M:%S'
+    )
+
+    logging.info('--- run_new_token started ---------------------')
+
     if(not email or not password):
         DualisService(config).interactively_acquire_token()
     else:
